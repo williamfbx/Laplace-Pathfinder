@@ -1,0 +1,7 @@
+ros2 launch aws_robomaker_bookstore_world bookstore.launch.py gui:=true
+ros2 launch dynamic_logistics_warehouse logistics_warehouse.launch.py
+
+ros2 launch laplace_pathfinder laplace_pathfinder.launch.py
+
+export TURTLEBOT3_MODEL=burger
+ros2 run turtlebot3_teleop teleop_keyboard

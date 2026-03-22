@@ -1,0 +1,20 @@
+scenario:
+  name: warehouse_default
+
+entities:
+  turtlebot3:
+    model: burger
+    start_pose:
+      x: -3.5
+      y: -9.0
+      z: 0.0
+      yaw: 0.0
+    goal_pose:
+      x: 30.0
+      y: 50.0
+      z: 0.0
+      yaw: 0.0
+
+simulation:
+  use_sim_time: true
+  world: dynamic_logistics_warehouse
