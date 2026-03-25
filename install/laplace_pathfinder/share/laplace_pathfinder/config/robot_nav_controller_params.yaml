@@ -1,0 +1,15 @@
+robot_nav_controller:
+  ros__parameters:
+    # Topics
+    cmd_vel_topic: /cmd_vel
+    odom_topic: /odom
+    waypoint_topic: /waypoint
+
+    # Goal reached tolerance in meters
+    waypoint_tolerance: 0.15
+
+    # Proportional control gains for differential drive
+    # linear_kp: controls forward speed based on distance to goal (m/s per meter)
+    # angular_kp: controls rotation speed based on heading error (rad/s per radian)
+    linear_kp: 0.2
+    angular_kp: 0.05

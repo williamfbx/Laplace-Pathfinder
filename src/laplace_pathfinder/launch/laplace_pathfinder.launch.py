@@ -16,6 +16,7 @@ def generate_launch_description():
     config_defaults = {
         'model': 'burger',
         'use_sim_time': 'true',
+        'world': 'dynamic_logistics_warehouse',
         'x_pose': '0.0',
         'y_pose': '0.0',
         'z_pose': '0.0',
@@ -39,6 +40,7 @@ def generate_launch_description():
         config_defaults['use_sim_time'] = str(
             simulation_config.get('use_sim_time', config_defaults['use_sim_time'])
         ).lower()
+        config_defaults['world'] = str(simulation_config.get('world', config_defaults['world']))
         config_defaults['x_pose'] = str(start_pose.get('x', config_defaults['x_pose']))
         config_defaults['y_pose'] = str(start_pose.get('y', config_defaults['y_pose']))
         config_defaults['z_pose'] = str(start_pose.get('z', config_defaults['z_pose']))
@@ -67,22 +69,39 @@ def generate_launch_description():
     start_marker_model = os.path.join(pkg_share_dir, 'models', 'start_marker.sdf')
     goal_marker_model = os.path.join(pkg_share_dir, 'models', 'goal_marker.sdf')
 
-    warehouse_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory('dynamic_logistics_warehouse'),
-                'launch',
-                'logistics_warehouse.launch.py'
-            )
-        ),
-        launch_arguments={
-            'gui': gui,
-            'verbose': verbose,
-            'paused': paused,
-            'use_sim_time': use_sim_time,
-            'headless': headless,
-        }.items()
-    )
+    selected_world = config_defaults['world']
+    if selected_world == 'dynamic_logistics_warehouse':
+        world_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(
+                    get_package_share_directory('dynamic_logistics_warehouse'),
+                    'launch',
+                    'logistics_warehouse.launch.py'
+                )
+            ),
+            launch_arguments={
+                'gui': gui,
+                'verbose': verbose,
+                'paused': paused,
+                'use_sim_time': use_sim_time,
+                'headless': headless,
+            }.items()
+        )
+    elif selected_world == 'aws_robomaker_bookstore_world':
+        world_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(
+                    get_package_share_directory('aws_robomaker_bookstore_world'),
+                    'launch',
+                    'bookstore.launch.py'
+                )
+            ),
+            launch_arguments={
+                'gui': gui,
+            }.items()
+        )
+    else:
+        raise ValueError(f'Unsupported simulation world: {selected_world}')
 
     robot_state_publisher_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -141,6 +160,36 @@ def generate_launch_description():
         ],
     )
 
+    robot_nav_controller_params = os.path.join(
+        pkg_share_dir, 'config', 'robot_nav_controller_params.yaml'
+    )
+
+    robot_nav_controller = Node(
+        package='laplace_pathfinder',
+        executable='robot_nav_controller',
+        name='robot_nav_controller',
+        output='screen',
+        parameters=[
+            robot_nav_controller_params,
+            {'use_sim_time': use_sim_time},
+        ],
+    )
+
+    robot_nav_planner_params = os.path.join(
+        pkg_share_dir, 'config', 'robot_nav_planner_params.yaml'
+    )
+
+    robot_nav_planner = Node(
+        package='laplace_pathfinder',
+        executable='robot_nav_planner',
+        name='robot_nav_planner',
+        output='screen',
+        parameters=[
+            robot_nav_planner_params,
+            {'use_sim_time': use_sim_time},
+        ],
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument('model', default_value=config_defaults['model']),
         DeclareLaunchArgument('gui', default_value='true'),
@@ -157,9 +206,11 @@ def generate_launch_description():
         DeclareLaunchArgument('goal_z_pose', default_value=config_defaults['goal_z_pose']),
         DeclareLaunchArgument('goal_yaw', default_value=config_defaults['goal_yaw']),
         SetEnvironmentVariable('TURTLEBOT3_MODEL', model),
-        warehouse_launch,
+        world_launch,
         spawn_start_marker,
         spawn_goal_marker,
         robot_state_publisher_launch,
         spawn_turtlebot_launch,
+        robot_nav_controller,
+        robot_nav_planner,
     ])

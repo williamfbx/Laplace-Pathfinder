@@ -1,0 +1,20 @@
+[35m[1mConsolidate compiler generated dependencies of target robot_nav_controller[0m
+[ 33%] [32mBuilding CXX object CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_node.cpp.o[0m
+[ 66%] [32mBuilding CXX object CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_main.cpp.o[0m
+[01m[K/home/william-ubuntu/16832_ws/src/laplace_pathfinder/src/robot_nav_controller_node.cpp:[m[K In member function ‘[01m[Kvoid laplace_pathfinder::RobotNavController::waypoint_callback(geometry_msgs::msg::Point_<std::allocator<void> >::SharedPtr)[m[K’:
+[01m[K/home/william-ubuntu/16832_ws/src/laplace_pathfinder/src/robot_nav_controller_node.cpp:57:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kstart_error_[m[K’ was not declared in this scope; did you mean ‘[01m[Kstrerror_r[m[K’?
+   57 |         [01;31m[Kstart_error_[m[K = 0.0;
+      |         [01;31m[K^~~~~~~~~~~~[m[K
+      |         [32m[Kstrerror_r[m[K
+[01m[K/home/william-ubuntu/16832_ws/src/laplace_pathfinder/src/robot_nav_controller_node.cpp:58:9:[m[K [01;31m[Kerror: [m[K‘[01m[Kerror_sum_[m[K’ was not declared in this scope; did you mean ‘[01m[Kerror_t[m[K’?
+   58 |         [01;31m[Kerror_sum_[m[K = 0.0;
+      |         [01;31m[K^~~~~~~~~~[m[K
+      |         [32m[Kerror_t[m[K
+[01m[K/home/william-ubuntu/16832_ws/src/laplace_pathfinder/src/robot_nav_controller_node.cpp:[m[K In member function ‘[01m[Kvoid laplace_pathfinder::RobotNavController::odom_callback(nav_msgs::msg::Odometry_<std::allocator<void> >::SharedPtr)[m[K’:
+[01m[K/home/william-ubuntu/16832_ws/src/laplace_pathfinder/src/robot_nav_controller_node.cpp:120:20:[m[K [01;31m[Kerror: [m[K‘[01m[Kwaypoint_tolerance_[m[K’ was not declared in this scope; did you mean ‘[01m[Kwaypoint_topic_[m[K’?
+  120 |         if (dist < [01;31m[Kwaypoint_tolerance_[m[K) {
+      |                    [01;31m[K^~~~~~~~~~~~~~~~~~~[m[K
+      |                    [32m[Kwaypoint_topic_[m[K
+gmake[2]: *** [CMakeFiles/robot_nav_controller.dir/build.make:90: CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/robot_nav_controller.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

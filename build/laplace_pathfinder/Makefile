@@ -197,6 +197,128 @@ laplace_pathfinder_uninstall/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/laplace_pathfinder_uninstall.dir/build.make CMakeFiles/laplace_pathfinder_uninstall.dir/build
 .PHONY : laplace_pathfinder_uninstall/fast
 
+#=============================================================================
+# Target rules for targets named robot_nav_controller
+
+# Build rule for target.
+robot_nav_controller: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 robot_nav_controller
+.PHONY : robot_nav_controller
+
+# fast build rule for target.
+robot_nav_controller/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_controller.dir/build.make CMakeFiles/robot_nav_controller.dir/build
+.PHONY : robot_nav_controller/fast
+
+#=============================================================================
+# Target rules for targets named robot_nav_planner
+
+# Build rule for target.
+robot_nav_planner: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 robot_nav_planner
+.PHONY : robot_nav_planner
+
+# fast build rule for target.
+robot_nav_planner/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/build
+.PHONY : robot_nav_planner/fast
+
+src/robot_nav_controller_main.o: src/robot_nav_controller_main.cpp.o
+.PHONY : src/robot_nav_controller_main.o
+
+# target to build an object file
+src/robot_nav_controller_main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_controller.dir/build.make CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_main.cpp.o
+.PHONY : src/robot_nav_controller_main.cpp.o
+
+src/robot_nav_controller_main.i: src/robot_nav_controller_main.cpp.i
+.PHONY : src/robot_nav_controller_main.i
+
+# target to preprocess a source file
+src/robot_nav_controller_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_controller.dir/build.make CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_main.cpp.i
+.PHONY : src/robot_nav_controller_main.cpp.i
+
+src/robot_nav_controller_main.s: src/robot_nav_controller_main.cpp.s
+.PHONY : src/robot_nav_controller_main.s
+
+# target to generate assembly for a file
+src/robot_nav_controller_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_controller.dir/build.make CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_main.cpp.s
+.PHONY : src/robot_nav_controller_main.cpp.s
+
+src/robot_nav_controller_node.o: src/robot_nav_controller_node.cpp.o
+.PHONY : src/robot_nav_controller_node.o
+
+# target to build an object file
+src/robot_nav_controller_node.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_controller.dir/build.make CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_node.cpp.o
+.PHONY : src/robot_nav_controller_node.cpp.o
+
+src/robot_nav_controller_node.i: src/robot_nav_controller_node.cpp.i
+.PHONY : src/robot_nav_controller_node.i
+
+# target to preprocess a source file
+src/robot_nav_controller_node.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_controller.dir/build.make CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_node.cpp.i
+.PHONY : src/robot_nav_controller_node.cpp.i
+
+src/robot_nav_controller_node.s: src/robot_nav_controller_node.cpp.s
+.PHONY : src/robot_nav_controller_node.s
+
+# target to generate assembly for a file
+src/robot_nav_controller_node.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_controller.dir/build.make CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_node.cpp.s
+.PHONY : src/robot_nav_controller_node.cpp.s
+
+src/robot_nav_planner_main.o: src/robot_nav_planner_main.cpp.o
+.PHONY : src/robot_nav_planner_main.o
+
+# target to build an object file
+src/robot_nav_planner_main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_main.cpp.o
+.PHONY : src/robot_nav_planner_main.cpp.o
+
+src/robot_nav_planner_main.i: src/robot_nav_planner_main.cpp.i
+.PHONY : src/robot_nav_planner_main.i
+
+# target to preprocess a source file
+src/robot_nav_planner_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_main.cpp.i
+.PHONY : src/robot_nav_planner_main.cpp.i
+
+src/robot_nav_planner_main.s: src/robot_nav_planner_main.cpp.s
+.PHONY : src/robot_nav_planner_main.s
+
+# target to generate assembly for a file
+src/robot_nav_planner_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_main.cpp.s
+.PHONY : src/robot_nav_planner_main.cpp.s
+
+src/robot_nav_planner_node.o: src/robot_nav_planner_node.cpp.o
+.PHONY : src/robot_nav_planner_node.o
+
+# target to build an object file
+src/robot_nav_planner_node.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_node.cpp.o
+.PHONY : src/robot_nav_planner_node.cpp.o
+
+src/robot_nav_planner_node.i: src/robot_nav_planner_node.cpp.i
+.PHONY : src/robot_nav_planner_node.i
+
+# target to preprocess a source file
+src/robot_nav_planner_node.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_node.cpp.i
+.PHONY : src/robot_nav_planner_node.cpp.i
+
+src/robot_nav_planner_node.s: src/robot_nav_planner_node.cpp.s
+.PHONY : src/robot_nav_planner_node.s
+
+# target to generate assembly for a file
+src/robot_nav_planner_node.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_node.cpp.s
+.PHONY : src/robot_nav_planner_node.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -212,6 +334,20 @@ help:
 	@echo "... test"
 	@echo "... laplace_pathfinder_uninstall"
 	@echo "... uninstall"
+	@echo "... robot_nav_controller"
+	@echo "... robot_nav_planner"
+	@echo "... src/robot_nav_controller_main.o"
+	@echo "... src/robot_nav_controller_main.i"
+	@echo "... src/robot_nav_controller_main.s"
+	@echo "... src/robot_nav_controller_node.o"
+	@echo "... src/robot_nav_controller_node.i"
+	@echo "... src/robot_nav_controller_node.s"
+	@echo "... src/robot_nav_planner_main.o"
+	@echo "... src/robot_nav_planner_main.i"
+	@echo "... src/robot_nav_planner_main.s"
+	@echo "... src/robot_nav_planner_node.o"
+	@echo "... src/robot_nav_planner_node.i"
+	@echo "... src/robot_nav_planner_node.s"
 .PHONY : help
 
 

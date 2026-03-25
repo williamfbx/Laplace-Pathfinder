@@ -11,6 +11,7 @@ from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
     pkg_dir = get_package_share_directory('dynamic_logistics_warehouse')
     world = os.path.join(pkg_dir, 'worlds', 'warehouse.world')
+    # world = os.path.join(pkg_dir, 'worlds', 'warehouse_static.world')
 
     gui = LaunchConfiguration('gui')
     verbose = LaunchConfiguration('verbose')

@@ -1,0 +1,33 @@
+[0.012s] Invoking command in '/home/william-ubuntu/16832_ws/build/pid_controller': /usr/bin/cmake /home/william-ubuntu/16832_ws/src/TurtleBot-Path-Tracking-using-PID-Controller -DCMAKE_INSTALL_PREFIX=/home/william-ubuntu/16832_ws/install/pid_controller
+[0.102s] -- The C compiler identification is GNU 11.4.0
+[0.173s] -- The CXX compiler identification is GNU 11.4.0
+[0.180s] -- Detecting C compiler ABI info
+[0.238s] -- Detecting C compiler ABI info - done
+[0.243s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.244s] -- Detecting C compile features
+[0.244s] -- Detecting C compile features - done
+[0.246s] -- Detecting CXX compiler ABI info
+[0.358s] -- Detecting CXX compiler ABI info - done
+[0.364s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.364s] -- Detecting CXX compile features
+[0.365s] -- Detecting CXX compile features - done
+[0.372s] [31mCMake Error at CMakeLists.txt:10 (find_package):
+[0.372s]   By not providing "Findcatkin.cmake" in CMAKE_MODULE_PATH this project has
+[0.372s]   asked CMake to find a package configuration file provided by "catkin", but
+[0.372s]   CMake did not find one.
+[0.372s] 
+[0.372s]   Could not find a package configuration file provided by "catkin" with any
+[0.372s]   of the following names:
+[0.372s] 
+[0.372s]     catkinConfig.cmake
+[0.372s]     catkin-config.cmake
+[0.373s] 
+[0.373s]   Add the installation prefix of "catkin" to CMAKE_PREFIX_PATH or set
+[0.373s]   "catkin_DIR" to a directory containing one of the above files.  If "catkin"
+[0.373s]   provides a separate development package or SDK, be sure it has been
+[0.373s]   installed.
+[0.373s] 
+[0.373s] [0m
+[0.373s] -- Configuring incomplete, errors occurred!
+[0.373s] See also "/home/william-ubuntu/16832_ws/build/pid_controller/CMakeFiles/CMakeOutput.log".
+[0.374s] Invoked command in '/home/william-ubuntu/16832_ws/build/pid_controller' returned '1': /usr/bin/cmake /home/william-ubuntu/16832_ws/src/TurtleBot-Path-Tracking-using-PID-Controller -DCMAKE_INSTALL_PREFIX=/home/william-ubuntu/16832_ws/install/pid_controller

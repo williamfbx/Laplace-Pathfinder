@@ -5,3 +5,10 @@ ros2 launch laplace_pathfinder laplace_pathfinder.launch.py
 
 export TURTLEBOT3_MODEL=burger
 ros2 run turtlebot3_teleop teleop_keyboard
+
+cd /home/william-ubuntu/16832_ws && source install/setup.bash && export GAZEBO_MODEL_PATH="$GAZEBO_MODEL_PATH:/home/william-ubuntu/16832_ws/src/aws-robomaker-bookstore-world/models" && export GAZEBO_RESOURCE_PATH="$GAZEBO_RESOURCE_PATH:/home/william-ubuntu/16832_ws/src/aws-robomaker-bookstore-world" && ros2 run gazebo_ros2_2dmap_plugin generate_map.sh /home/william-ubuntu/16832_ws/src/aws-robomaker-bookstore-world/worlds/bookstore.world /home/william-ubuntu/16832_ws
+
+cd /home/william-ubuntu/16832_ws && source install/setup.bash && export GAZEBO_MODEL_PATH="$GAZEBO_MODEL_PATH:/home/william-ubuntu/16832_ws/src/dynamic_logistics_warehouse/models" && export GAZEBO_RESOURCE_PATH="$GAZEBO_RESOURCE_PATH:/home/william-ubuntu/16832_ws/src/dynamic_logistics_warehouse" && ros2 run gazebo_ros2_2dmap_plugin generate_map.sh /home/william-ubuntu/16832_ws/src/dynamic_logistics_warehouse/worlds/warehouse_static.world /home/william-ubuntu/16832_ws
+
+ros2 topic pub --once /waypoint geometry_msgs/msg/Point "{x: -5.5, y: 6.5, z: 0.0}"
+ros2 run laplace_pathfinder robot_nav_controller

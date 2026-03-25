@@ -1,0 +1,126 @@
+[0.000000] (-) TimerEvent: {}
+[0.000264] (-) JobUnselected: {'identifier': 'aws_robomaker_bookstore_world'}
+[0.000299] (-) JobUnselected: {'identifier': 'dynamic_logistics_warehouse'}
+[0.000345] (-) JobUnselected: {'identifier': 'gazebo_ros2_2dmap_plugin'}
+[0.000359] (laplace_pathfinder) JobQueued: {'identifier': 'laplace_pathfinder', 'dependencies': OrderedDict([('aws_robomaker_bookstore_world', '/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world'), ('dynamic_logistics_warehouse', '/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse')])}
+[0.000381] (laplace_pathfinder) JobStarted: {'identifier': 'laplace_pathfinder'}
+[0.007799] (laplace_pathfinder) JobProgress: {'identifier': 'laplace_pathfinder', 'progress': 'cmake'}
+[0.008464] (laplace_pathfinder) JobProgress: {'identifier': 'laplace_pathfinder', 'progress': 'build'}
+[0.009298] (laplace_pathfinder) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/william-ubuntu/16832_ws/build/laplace_pathfinder', '--', '-j12', '-l12'], 'cwd': '/home/william-ubuntu/16832_ws/build/laplace_pathfinder', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('PYTHON_BASIC_REPL', '1'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'william-ubuntu'), ('FONTCONFIG_PATH', '/etc/fonts'), ('GIT_EDITOR', ':'), ('GIO_MODULE_DIR', '/home/william-ubuntu/snap/code/common/.cache/gio-modules'), ('XDG_SESSION_TYPE', 'wayland'), ('GIT_ASKPASS', '/snap/code/230/usr/share/code/resources/app/extensions/git/dist/askpass.sh'), ('GTK_EXE_PREFIX_VSCODE_SNAP_ORIG', ''), ('GDK_BACKEND_VSCODE_SNAP_ORIG', ''), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins::/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('HOME', '/home/william-ubuntu'), ('CHROME_DESKTOP', 'code.desktop'), ('LOCPATH_VSCODE_SNAP_ORIG', ''), ('TERM_PROGRAM_VERSION', '1.112.0'), ('DESKTOP_SESSION', 'ubuntu'), ('GTK_PATH', '/snap/code/230/usr/lib/x86_64-linux-gnu/gtk-3.0'), ('XDG_DATA_HOME_VSCODE_SNAP_ORIG', ''), ('GTK_IM_MODULE_FILE', '/home/william-ubuntu/snap/code/common/.cache/immodules/immodules.cache'), ('GIO_LAUNCHED_DESKTOP_FILE', '/var/lib/snapd/desktop/applications/code_code.desktop'), ('GAZEBO_MASTER_URI', 'http://localhost:11345'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('GSETTINGS_SCHEMA_DIR_VSCODE_SNAP_ORIG', ''), ('VSCODE_GIT_ASKPASS_MAIN', '/snap/code/230/usr/share/code/resources/app/extensions/git/dist/askpass-main.js'), ('VSCODE_GIT_ASKPASS_NODE', '/snap/code/230/usr/share/code/code'), ('MANAGERPID', '1125'), ('PYDEVD_DISABLE_FILE_VALIDATION', '1'), ('SYSTEMD_EXEC_PID', '1284'), ('BUNDLED_DEBUGPY_PATH', '/home/william-ubuntu/.vscode/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/libs/debugpy'), ('IM_CONFIG_CHECK_ENV', '1'), ('VSCODE_PYTHON_AUTOACTIVATE_GUARD', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '3901'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'william-ubuntu'), ('JOURNAL_STREAM', '8:2720'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_CONFIG_DIRS_VSCODE_SNAP_ORIG', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_SESSION_CLASS', 'user'), ('XDG_DATA_DIRS_VSCODE_SNAP_ORIG', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('USERNAME', 'william-ubuntu'), ('TERM', 'xterm-256color'), ('GAZEBO_MODEL_PATH', '/usr/share/gazebo-11/models:/usr/share/gazebo-11/models:'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('FC_FONTATIONS', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('HISTCONTROL', 'ignorespace'), ('OGRE_RESOURCE_PATH', '/usr/lib/x86_64-linux-gnu/OGRE-1.9.0'), ('PATH', '/home/william-ubuntu/.config/Code/User/globalStorage/github.copilot-chat/debugCommand:/home/william-ubuntu/.config/Code/User/globalStorage/github.copilot-chat/copilotCli:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/william-ubuntu/.vscode/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/scripts/noConfigScripts'), ('SESSION_MANAGER', 'local/william-ubuntu:@/tmp/.ICE-unix/1254,unix/william-ubuntu:/tmp/.ICE-unix/1254'), ('GTK_EXE_PREFIX', '/snap/code/230/usr'), ('INVOCATION_ID', 'c3b30964a58f476eb1cb55976818817e'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'x11'), ('DISPLAY', ':0'), ('LOCPATH', '/snap/code/230/usr/lib/locale'), ('VSCODE_DEBUGPY_ADAPTER_ENDPOINTS', '/home/william-ubuntu/.vscode/extensions/ms-python.debugpy-2025.18.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-8c4544e0414e9e3e.txt'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('PYTHONSTARTUP', '/home/william-ubuntu/.config/Code/User/workspaceStorage/911a8a9d0188b03ae20887cb257652b9/ms-python.python/pythonrc.py'), ('GIO_MODULE_DIR_VSCODE_SNAP_ORIG', ''), ('XDG_DATA_HOME', '/home/william-ubuntu/snap/code/230/.local/share'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.AD60M3'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-838d460508.sock'), ('TERM_PROGRAM', 'vscode'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('GSETTINGS_SCHEMA_DIR', '/home/william-ubuntu/snap/code/230/.local/share/glib-2.0/schemas'), ('AMENT_PREFIX_PATH', '/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GTK_PATH_VSCODE_SNAP_ORIG', ''), ('FONTCONFIG_FILE', '/etc/fonts/fonts.conf'), ('GTK_IM_MODULE_FILE_VSCODE_SNAP_ORIG', ''), ('GAZEBO_RESOURCE_PATH', '/usr/share/gazebo-11:/usr/share/gazebo-11:'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GAZEBO_MODEL_DATABASE_URI', 'http://models.gazebosim.org'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('GIT_PAGER', 'cat'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/william-ubuntu/16832_ws/build/laplace_pathfinder'), ('GIT_MERGE_AUTOEDIT', 'no'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('GAZEBO_PLUGIN_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('XDG_DATA_DIRS', '/home/william-ubuntu/snap/code/230/.local/share:/home/william-ubuntu/snap/code/230:/snap/code/230/usr/share:/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world')]), 'shell': False}
+[0.077094] (laplace_pathfinder) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target robot_nav_controller\x1b[0m\n'}
+[0.093773] (laplace_pathfinder) StdoutLine: {'line': b'[ 33%] \x1b[32mBuilding CXX object CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_node.cpp.o\x1b[0m\n'}
+[0.095539] (laplace_pathfinder) StdoutLine: {'line': b'[ 66%] \x1b[32mBuilding CXX object CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_main.cpp.o\x1b[0m\n'}
+[0.101449] (-) TimerEvent: {}
+[0.202253] (-) TimerEvent: {}
+[0.302628] (-) TimerEvent: {}
+[0.402958] (-) TimerEvent: {}
+[0.503324] (-) TimerEvent: {}
+[0.603706] (-) TimerEvent: {}
+[0.704058] (-) TimerEvent: {}
+[0.804410] (-) TimerEvent: {}
+[0.904746] (-) TimerEvent: {}
+[1.005098] (-) TimerEvent: {}
+[1.105430] (-) TimerEvent: {}
+[1.205760] (-) TimerEvent: {}
+[1.306085] (-) TimerEvent: {}
+[1.406425] (-) TimerEvent: {}
+[1.506740] (-) TimerEvent: {}
+[1.607108] (-) TimerEvent: {}
+[1.707444] (-) TimerEvent: {}
+[1.807756] (-) TimerEvent: {}
+[1.908080] (-) TimerEvent: {}
+[2.008417] (-) TimerEvent: {}
+[2.108718] (-) TimerEvent: {}
+[2.209010] (-) TimerEvent: {}
+[2.309287] (-) TimerEvent: {}
+[2.409629] (-) TimerEvent: {}
+[2.509940] (-) TimerEvent: {}
+[2.610291] (-) TimerEvent: {}
+[2.710595] (-) TimerEvent: {}
+[2.811005] (-) TimerEvent: {}
+[2.911355] (-) TimerEvent: {}
+[3.011693] (-) TimerEvent: {}
+[3.112013] (-) TimerEvent: {}
+[3.212422] (-) TimerEvent: {}
+[3.312721] (-) TimerEvent: {}
+[3.413049] (-) TimerEvent: {}
+[3.513355] (-) TimerEvent: {}
+[3.613652] (-) TimerEvent: {}
+[3.713984] (-) TimerEvent: {}
+[3.814366] (-) TimerEvent: {}
+[3.914640] (-) TimerEvent: {}
+[4.014987] (-) TimerEvent: {}
+[4.115347] (-) TimerEvent: {}
+[4.215589] (-) TimerEvent: {}
+[4.315970] (-) TimerEvent: {}
+[4.416335] (-) TimerEvent: {}
+[4.516676] (-) TimerEvent: {}
+[4.616952] (-) TimerEvent: {}
+[4.717181] (-) TimerEvent: {}
+[4.817425] (-) TimerEvent: {}
+[4.917746] (-) TimerEvent: {}
+[5.018090] (-) TimerEvent: {}
+[5.118371] (-) TimerEvent: {}
+[5.218661] (-) TimerEvent: {}
+[5.318996] (-) TimerEvent: {}
+[5.419330] (-) TimerEvent: {}
+[5.519560] (-) TimerEvent: {}
+[5.619878] (-) TimerEvent: {}
+[5.720111] (-) TimerEvent: {}
+[5.820344] (-) TimerEvent: {}
+[5.920631] (-) TimerEvent: {}
+[6.020975] (-) TimerEvent: {}
+[6.121384] (-) TimerEvent: {}
+[6.221703] (-) TimerEvent: {}
+[6.322086] (-) TimerEvent: {}
+[6.422415] (-) TimerEvent: {}
+[6.522677] (-) TimerEvent: {}
+[6.622944] (-) TimerEvent: {}
+[6.723296] (-) TimerEvent: {}
+[6.823630] (-) TimerEvent: {}
+[6.923901] (-) TimerEvent: {}
+[7.024255] (-) TimerEvent: {}
+[7.124492] (-) TimerEvent: {}
+[7.224760] (-) TimerEvent: {}
+[7.325116] (-) TimerEvent: {}
+[7.369804] (laplace_pathfinder) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable robot_nav_controller\x1b[0m\n'}
+[7.425328] (-) TimerEvent: {}
+[7.525600] (-) TimerEvent: {}
+[7.625883] (-) TimerEvent: {}
+[7.726256] (-) TimerEvent: {}
+[7.755985] (laplace_pathfinder) StdoutLine: {'line': b'[100%] Built target robot_nav_controller\n'}
+[7.766042] (laplace_pathfinder) CommandEnded: {'returncode': 0}
+[7.766875] (laplace_pathfinder) JobProgress: {'identifier': 'laplace_pathfinder', 'progress': 'install'}
+[7.777377] (laplace_pathfinder) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/william-ubuntu/16832_ws/build/laplace_pathfinder'], 'cwd': '/home/william-ubuntu/16832_ws/build/laplace_pathfinder', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('PYTHON_BASIC_REPL', '1'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'william-ubuntu'), ('FONTCONFIG_PATH', '/etc/fonts'), ('GIT_EDITOR', ':'), ('GIO_MODULE_DIR', '/home/william-ubuntu/snap/code/common/.cache/gio-modules'), ('XDG_SESSION_TYPE', 'wayland'), ('GIT_ASKPASS', '/snap/code/230/usr/share/code/resources/app/extensions/git/dist/askpass.sh'), ('GTK_EXE_PREFIX_VSCODE_SNAP_ORIG', ''), ('GDK_BACKEND_VSCODE_SNAP_ORIG', ''), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins::/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('HOME', '/home/william-ubuntu'), ('CHROME_DESKTOP', 'code.desktop'), ('LOCPATH_VSCODE_SNAP_ORIG', ''), ('TERM_PROGRAM_VERSION', '1.112.0'), ('DESKTOP_SESSION', 'ubuntu'), ('GTK_PATH', '/snap/code/230/usr/lib/x86_64-linux-gnu/gtk-3.0'), ('XDG_DATA_HOME_VSCODE_SNAP_ORIG', ''), ('GTK_IM_MODULE_FILE', '/home/william-ubuntu/snap/code/common/.cache/immodules/immodules.cache'), ('GIO_LAUNCHED_DESKTOP_FILE', '/var/lib/snapd/desktop/applications/code_code.desktop'), ('GAZEBO_MASTER_URI', 'http://localhost:11345'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('GSETTINGS_SCHEMA_DIR_VSCODE_SNAP_ORIG', ''), ('VSCODE_GIT_ASKPASS_MAIN', '/snap/code/230/usr/share/code/resources/app/extensions/git/dist/askpass-main.js'), ('VSCODE_GIT_ASKPASS_NODE', '/snap/code/230/usr/share/code/code'), ('MANAGERPID', '1125'), ('PYDEVD_DISABLE_FILE_VALIDATION', '1'), ('SYSTEMD_EXEC_PID', '1284'), ('BUNDLED_DEBUGPY_PATH', '/home/william-ubuntu/.vscode/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/libs/debugpy'), ('IM_CONFIG_CHECK_ENV', '1'), ('VSCODE_PYTHON_AUTOACTIVATE_GUARD', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '3901'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'william-ubuntu'), ('JOURNAL_STREAM', '8:2720'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_CONFIG_DIRS_VSCODE_SNAP_ORIG', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_SESSION_CLASS', 'user'), ('XDG_DATA_DIRS_VSCODE_SNAP_ORIG', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('USERNAME', 'william-ubuntu'), ('TERM', 'xterm-256color'), ('GAZEBO_MODEL_PATH', '/usr/share/gazebo-11/models:/usr/share/gazebo-11/models:'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('FC_FONTATIONS', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('HISTCONTROL', 'ignorespace'), ('OGRE_RESOURCE_PATH', '/usr/lib/x86_64-linux-gnu/OGRE-1.9.0'), ('PATH', '/home/william-ubuntu/.config/Code/User/globalStorage/github.copilot-chat/debugCommand:/home/william-ubuntu/.config/Code/User/globalStorage/github.copilot-chat/copilotCli:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/william-ubuntu/.vscode/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/scripts/noConfigScripts'), ('SESSION_MANAGER', 'local/william-ubuntu:@/tmp/.ICE-unix/1254,unix/william-ubuntu:/tmp/.ICE-unix/1254'), ('GTK_EXE_PREFIX', '/snap/code/230/usr'), ('INVOCATION_ID', 'c3b30964a58f476eb1cb55976818817e'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'x11'), ('DISPLAY', ':0'), ('LOCPATH', '/snap/code/230/usr/lib/locale'), ('VSCODE_DEBUGPY_ADAPTER_ENDPOINTS', '/home/william-ubuntu/.vscode/extensions/ms-python.debugpy-2025.18.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-8c4544e0414e9e3e.txt'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('PYTHONSTARTUP', '/home/william-ubuntu/.config/Code/User/workspaceStorage/911a8a9d0188b03ae20887cb257652b9/ms-python.python/pythonrc.py'), ('GIO_MODULE_DIR_VSCODE_SNAP_ORIG', ''), ('XDG_DATA_HOME', '/home/william-ubuntu/snap/code/230/.local/share'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.AD60M3'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-838d460508.sock'), ('TERM_PROGRAM', 'vscode'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('GSETTINGS_SCHEMA_DIR', '/home/william-ubuntu/snap/code/230/.local/share/glib-2.0/schemas'), ('AMENT_PREFIX_PATH', '/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GTK_PATH_VSCODE_SNAP_ORIG', ''), ('FONTCONFIG_FILE', '/etc/fonts/fonts.conf'), ('GTK_IM_MODULE_FILE_VSCODE_SNAP_ORIG', ''), ('GAZEBO_RESOURCE_PATH', '/usr/share/gazebo-11:/usr/share/gazebo-11:'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GAZEBO_MODEL_DATABASE_URI', 'http://models.gazebosim.org'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('GIT_PAGER', 'cat'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/william-ubuntu/16832_ws/build/laplace_pathfinder'), ('GIT_MERGE_AUTOEDIT', 'no'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('GAZEBO_PLUGIN_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:'), ('XDG_DATA_DIRS', '/home/william-ubuntu/snap/code/230/.local/share:/home/william-ubuntu/snap/code/230:/snap/code/230/usr/share:/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world')]), 'shell': False}
+[7.784397] (laplace_pathfinder) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[7.784611] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch\n'}
+[7.784690] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/laplace_pathfinder.launch.py\n'}
+[7.784842] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config\n'}
+[7.784908] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/scenario_config.yaml\n'}
+[7.784969] (laplace_pathfinder) StdoutLine: {'line': b'-- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/robot_nav_controller_params.yaml\n'}
+[7.785098] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/models\n'}
+[7.785151] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/models/goal_marker.sdf\n'}
+[7.785200] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/models/start_marker.sdf\n'}
+[7.785258] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include\n'}
+[7.785309] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include/laplace_pathfinder\n'}
+[7.785365] (laplace_pathfinder) StdoutLine: {'line': b'-- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include/laplace_pathfinder/robot_nav_controller.hpp\n'}
+[7.785420] (laplace_pathfinder) StdoutLine: {'line': b'-- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/lib/laplace_pathfinder/robot_nav_controller\n'}
+[7.790283] (laplace_pathfinder) StdoutLine: {'line': b'-- Set runtime path of "/home/william-ubuntu/16832_ws/install/laplace_pathfinder/lib/laplace_pathfinder/robot_nav_controller" to ""\n'}
+[7.790576] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/ament_index/resource_index/package_run_dependencies/laplace_pathfinder\n'}
+[7.790653] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/ament_index/resource_index/parent_prefix_path/laplace_pathfinder\n'}
+[7.790706] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/ament_prefix_path.sh\n'}
+[7.790783] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/ament_prefix_path.dsv\n'}
+[7.790832] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/path.sh\n'}
+[7.790881] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/path.dsv\n'}
+[7.790928] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.bash\n'}
+[7.790975] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.sh\n'}
+[7.791022] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.zsh\n'}
+[7.791070] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.dsv\n'}
+[7.791117] (laplace_pathfinder) StdoutLine: {'line': b'-- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/package.dsv\n'}
+[7.791208] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/ament_index/resource_index/packages/laplace_pathfinder\n'}
+[7.791277] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/cmake/laplace_pathfinderConfig.cmake\n'}
+[7.791328] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/cmake/laplace_pathfinderConfig-version.cmake\n'}
+[7.791397] (laplace_pathfinder) StdoutLine: {'line': b'-- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/package.xml\n'}
+[7.792674] (laplace_pathfinder) CommandEnded: {'returncode': 0}
+[7.807463] (laplace_pathfinder) JobEnded: {'identifier': 'laplace_pathfinder', 'rc': 0}
+[7.807696] (-) EventReactorShutdown: {}
