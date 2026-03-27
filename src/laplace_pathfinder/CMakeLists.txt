@@ -33,6 +33,7 @@ ament_target_dependencies(robot_nav_controller
 add_executable(robot_nav_planner
 	src/robot_nav_planner_main.cpp
 	src/robot_nav_planner_node.cpp
+	src/utils.cpp
 )
 
 target_include_directories(robot_nav_planner PUBLIC
@@ -40,7 +41,6 @@ target_include_directories(robot_nav_planner PUBLIC
 )
 
 ament_target_dependencies(robot_nav_planner
-	ament_index_cpp
 	geometry_msgs
 	nav_msgs
 	rclcpp

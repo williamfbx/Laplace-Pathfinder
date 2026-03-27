@@ -4,25 +4,20 @@ robot_nav_planner:
     odom_topic: /odom
     waypoint_topic: /waypoint
 
-    # Map coordinate frame — must match bookstore.yaml
-    # origin is the world coordinates of the bottom-left corner of the map image
+    # Map coordinate frame (must match YAML file in maps/ directory)
     map_origin_x: -9.9
     map_origin_y: -9.33
-    map_resolution: 0.05  # meters per cell
+    map_resolution: 0.05
 
-    # Path to the precomputed Laplace potential field.
-    # Leave empty to auto-resolve from the package share directory.
-    phi_file_path: ""
+    # Path to the precomputed Laplace potential field
+    phi_file_path: "src/laplace_pathfinder/maps/bookstore_map_phi.npy"
 
-    # How often the planner issues a new waypoint (seconds)
+    # Planner callback timer
     timer_period_s: 0.5
 
-    # Number of gradient ascent steps to look ahead before publishing the
-    # waypoint. Each step is map_resolution meters.
-    # Set this so the waypoint is further than waypoint_tolerance in the
-    # controller (default 0.15 m). 6 steps = 0.30 m straight, 0.21 m diagonal.
+    # Number of gradient ascent steps to look ahead before publishing the waypoint
+    # The waypoint should be higher than waypoint_tolerance in robot_nav_controller_params.yaml
     step_lookahead: 6
 
-    # Phi value (out of max 20.0) at which the robot is considered
-    # to have reached the goal. Stops issuing waypoints above this threshold.
-    goal_phi_threshold: 18.0
+    # Phi value at which the robot is considered to have reached the goal
+    goal_phi_threshold: 90.0

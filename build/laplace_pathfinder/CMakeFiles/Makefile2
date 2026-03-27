@@ -163,12 +163,12 @@ CMakeFiles/robot_nav_controller.dir/clean:
 CMakeFiles/robot_nav_planner.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robot_nav_planner.dir/build.make CMakeFiles/robot_nav_planner.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/william-ubuntu/16832_ws/build/laplace_pathfinder/CMakeFiles --progress-num=4,5,6 "Built target robot_nav_planner"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/william-ubuntu/16832_ws/build/laplace_pathfinder/CMakeFiles --progress-num=4,5,6,7 "Built target robot_nav_planner"
 .PHONY : CMakeFiles/robot_nav_planner.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/robot_nav_planner.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/william-ubuntu/16832_ws/build/laplace_pathfinder/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/william-ubuntu/16832_ws/build/laplace_pathfinder/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/robot_nav_planner.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/william-ubuntu/16832_ws/build/laplace_pathfinder/CMakeFiles 0
 .PHONY : CMakeFiles/robot_nav_planner.dir/rule

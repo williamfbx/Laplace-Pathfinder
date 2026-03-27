@@ -22,36 +22,40 @@ public:
 	explicit RobotNavController(const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
 
 private:
+	// Publishers
+	std::string cmd_vel_topic_;
+	rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
+
+	// Subscribers
+	std::string odom_topic_;
+	rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
+
+	std::string waypoint_topic_;
+	rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr waypoint_subscription_;
+
+	// Callbacks
 	void waypoint_callback(const geometry_msgs::msg::Point::SharedPtr msg);
 	void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
-	void publish_stop();
 
+	// Control helpers
+	void publish_stop();
 	double compute_yaw_radians(const nav_msgs::msg::Odometry & odometry) const;
 	double compute_goal_heading_degrees() const;
 	double normalize_angle_degrees(double angle_degrees) const;
 
-	rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
-	rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
-	rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr waypoint_subscription_;
-
-	Waypoint current_goal_;
-	double x_start_;
-	double y_start_;
-	double last_x_;
-	double last_y_;
-
-	bool has_active_goal_;
-	bool has_pose_;
-
-	std::string cmd_vel_topic_;
-	std::string odom_topic_;
-	std::string waypoint_topic_;
-
+	// Parameters
 	double waypoint_tolerance_;
-
-	// Proportional control gains
 	double linear_kp_;
 	double angular_kp_;
+
+	// Robot state
+	Waypoint current_goal_;
+	double x_start_{0.0};
+	double y_start_{0.0};
+	double last_x_{0.0};
+	double last_y_{0.0};
+	bool has_active_goal_{false};
+	bool has_pose_{false};
 };
 
 }  // namespace laplace_pathfinder

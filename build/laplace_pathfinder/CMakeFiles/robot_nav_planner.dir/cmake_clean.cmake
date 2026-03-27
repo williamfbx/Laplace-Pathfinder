@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_main.cpp.o.d"
   "CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_node.cpp.o"
   "CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_node.cpp.o.d"
+  "CMakeFiles/robot_nav_planner.dir/src/utils.cpp.o"
+  "CMakeFiles/robot_nav_planner.dir/src/utils.cpp.o.d"
   "robot_nav_planner"
   "robot_nav_planner.pdb"
 )

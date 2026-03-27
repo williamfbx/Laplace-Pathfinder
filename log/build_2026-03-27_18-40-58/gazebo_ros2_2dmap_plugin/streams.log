@@ -1,0 +1,28 @@
+[0.010s] Invoking command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin:/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world /usr/bin/cmake --build /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin -- -j12 -l12
+[0.087s] [100%] Built target gazebo_2Dmap_plugin
+[0.104s] Invoked command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin' returned '0': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin:/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world /usr/bin/cmake --build /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin -- -j12 -l12
+[0.104s] Invoking command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin:/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world /usr/bin/cmake --install /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin
+[0.110s] -- Install configuration: ""
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/lib/libgazebo_2Dmap_plugin.so
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/include
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/include/common.h
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/include/gazebo_2Dmap_plugin.h
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/launch
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/launch/generate_map.launch.py
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/lib/gazebo_ros2_2dmap_plugin/generate_map.sh
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/ament_index/resource_index/package_run_dependencies/gazebo_ros2_2dmap_plugin
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/ament_index/resource_index/parent_prefix_path/gazebo_ros2_2dmap_plugin
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/environment/ament_prefix_path.sh
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/environment/ament_prefix_path.dsv
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/environment/path.sh
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/environment/path.dsv
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/local_setup.bash
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/local_setup.sh
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/local_setup.zsh
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/local_setup.dsv
+[0.110s] -- Installing: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/package.dsv
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/ament_index/resource_index/packages/gazebo_ros2_2dmap_plugin
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/cmake/gazebo_ros2_2dmap_pluginConfig.cmake
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/cmake/gazebo_ros2_2dmap_pluginConfig-version.cmake
+[0.110s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin/share/gazebo_ros2_2dmap_plugin/package.xml
+[0.112s] Invoked command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin' returned '0': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin:/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world /usr/bin/cmake --install /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin
