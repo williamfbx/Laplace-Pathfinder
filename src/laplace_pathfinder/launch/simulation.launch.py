@@ -100,6 +100,24 @@ def generate_launch_description():
                 'gui': gui,
             }.items()
         )
+    elif selected_world == 'aws_robomaker_dynamic_bookstore_world':
+        world_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(
+                    get_package_share_directory('aws_robomaker_bookstore_world'),
+                    'launch',
+                    'bookstore.launch.py'
+                )
+            ),
+            launch_arguments={
+                'gui': gui,
+                'world': os.path.join(
+                    get_package_share_directory('aws_robomaker_bookstore_world'),
+                    'worlds',
+                    'dynamic_bookstore.world'
+                ),
+            }.items()
+        )
     else:
         raise ValueError(f'Unsupported simulation world: {selected_world}')
 

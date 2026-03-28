@@ -32,8 +32,16 @@ RobotNavPlanner::RobotNavPlanner(const rclcpp::NodeOptions & options) : Node("ro
 		throw std::runtime_error("Potential field file path is not set.");
 	}
 
+	map_file_path_ = declare_parameter<std::string>("map_file_path", "");
+	if (map_file_path_.empty()) {
+		throw std::runtime_error("Map file path is not set.");
+	}
+
 	// Publishers, subscribers, and timers
 	waypoint_publisher_ = create_publisher<geometry_msgs::msg::Point>(waypoint_topic_, 10);
+
+	global_costmap_publisher_ = create_publisher<nav_msgs::msg::OccupancyGrid>(
+		"/global_costmap", rclcpp::QoS(1).transient_local());
 
 	odom_subscription_ = create_subscription<nav_msgs::msg::Odometry>(
 		odom_topic_, 10,
@@ -50,6 +58,9 @@ RobotNavPlanner::RobotNavPlanner(const rclcpp::NodeOptions & options) : Node("ro
 		get_logger(),
 		"Loaded phi field: %d rows x %d cols from %s",
 		phi_rows_, phi_cols_, phi_path_.c_str());
+
+	// Publish global costmap once at startup
+	publish_global_costmap();
 
 	RCLCPP_INFO(
 		get_logger(),
@@ -174,6 +185,42 @@ std::pair<int, int> RobotNavPlanner::find_next_step(int row, int col) const
 	}
 	
 	return {best_row, best_col};
+}
+
+
+void RobotNavPlanner::publish_global_costmap()
+{
+	int map_rows = 0, map_cols = 0;
+	const auto map_data = laplace_pathfinder::load_npy_int64(map_file_path_, map_rows, map_cols);
+
+	RCLCPP_INFO(
+		get_logger(),
+		"Loaded map: %d rows x %d cols from %s",
+		map_rows, map_cols, map_file_path_.c_str());
+
+	nav_msgs::msg::OccupancyGrid msg;
+	msg.header.stamp = now();
+	msg.header.frame_id = "odom";
+
+	msg.info.resolution = map_resolution_;
+	msg.info.width = static_cast<uint32_t>(map_cols);
+	msg.info.height = static_cast<uint32_t>(map_rows);
+	msg.info.origin.position.x = map_origin_x_;
+	msg.info.origin.position.y = map_origin_y_;
+	msg.info.origin.position.z = 0.0;
+	msg.info.origin.orientation.w = 1.0;
+
+	msg.data.resize(static_cast<std::size_t>(map_rows) * map_cols);
+	for (int r = 0; r < map_rows; ++r) {
+		for (int c = 0; c < map_cols; ++c) {
+			const int grid_row = (map_rows - 1) - r;
+			const std::size_t idx = static_cast<std::size_t>(r) * map_cols + c;
+			msg.data[idx] = (map_data[grid_row][c] != 0) ? 100 : 0;
+		}
+	}
+
+	global_costmap_publisher_->publish(msg);
+	RCLCPP_INFO(get_logger(), "Published global costmap");
 }
 
 }  // namespace laplace_pathfinder

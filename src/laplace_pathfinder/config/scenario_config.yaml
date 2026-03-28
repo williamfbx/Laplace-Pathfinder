@@ -1,6 +1,3 @@
-scenario:
-  name: bookstore_default
-
 entities:
   turtlebot3:
     model: burger
@@ -19,10 +16,9 @@ entities:
 
 simulation:
   use_sim_time: true
-  world: aws_robomaker_bookstore_world
+  # world: aws_robomaker_bookstore_world
+  world: aws_robomaker_dynamic_bookstore_world
 
-# scenario:
-#   name: warehouse_default
 
 # entities:
 #   turtlebot3:

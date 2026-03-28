@@ -12,6 +12,9 @@ robot_nav_planner:
     # Path to the precomputed Laplace potential field
     phi_file_path: "src/laplace_pathfinder/maps/bookstore_map_phi.npy"
 
+    # Path to the binary occupancy map (0=free, non-zero=occupied)
+    map_file_path: "src/laplace_pathfinder/maps/bookstore_map.npy"
+
     # Planner callback timer
     timer_period_s: 0.5
 

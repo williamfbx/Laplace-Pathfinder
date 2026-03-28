@@ -1,6 +1,7 @@
 #pragma once
 
 #include <geometry_msgs/msg/point.hpp>
+#include <nav_msgs/msg/occupancy_grid.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
 
@@ -20,6 +21,7 @@ private:
 	// Publishers
 	std::string waypoint_topic_;
 	rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr waypoint_publisher_;
+	rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr global_costmap_publisher_;
 
 	// Subscribers
 	std::string odom_topic_;
@@ -29,6 +31,7 @@ private:
 	// Callbacks
 	void timer_callback();
 	void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
+	void publish_global_costmap();
 
 	// Coordinate conversions
 	std::pair<int, int> loc2grid(double x, double y) const;
@@ -61,6 +64,9 @@ private:
 	std::vector<std::vector<double>> phi_;
 	int phi_rows_{0};
 	int phi_cols_{0};
+
+	// Global costmap
+	std::string map_file_path_;
 };
 
 }  // namespace laplace_pathfinder

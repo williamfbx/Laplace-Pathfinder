@@ -25,3 +25,10 @@ gnome-terminal --title="Robot Nav Controller" -- bash -c "
   ros2 launch laplace_pathfinder robot_nav_controller.launch.py
   exec bash
 "
+
+gnome-terminal --title="Local Costmap" -- bash -c "
+  source /opt/ros/humble/setup.bash
+  source '$SCRIPT_DIR/install/setup.bash'
+  ros2 launch laplace_pathfinder local_costmap.launch.py
+  exec bash
+"

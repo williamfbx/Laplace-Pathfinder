@@ -35,9 +35,17 @@ def generate_launch_description():
         launch_arguments={'use_sim_time': use_sim_time}.items(),
     )
 
+    local_costmap_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(launch_dir, 'local_costmap.launch.py')
+        ),
+        launch_arguments={'use_sim_time': use_sim_time}.items(),
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         simulation_launch,
         robot_nav_planner_launch,
         robot_nav_controller_launch,
+        local_costmap_launch,
     ])
