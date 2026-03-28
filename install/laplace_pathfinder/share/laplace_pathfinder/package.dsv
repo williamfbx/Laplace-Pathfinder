@@ -1,8 +1,0 @@
-source;share/laplace_pathfinder/hook/cmake_prefix_path.ps1
-source;share/laplace_pathfinder/hook/cmake_prefix_path.dsv
-source;share/laplace_pathfinder/hook/cmake_prefix_path.sh
-source;share/laplace_pathfinder/local_setup.bash
-source;share/laplace_pathfinder/local_setup.dsv
-source;share/laplace_pathfinder/local_setup.ps1
-source;share/laplace_pathfinder/local_setup.sh
-source;share/laplace_pathfinder/local_setup.zsh

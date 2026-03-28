@@ -1,7 +1,0 @@
-[01m[K/home/william-ubuntu/16832_ws/src/laplace_pathfinder/src/robot_nav_planner_node.cpp:[m[K In constructor ‘[01m[Klaplace_pathfinder::RobotNavPlanner::RobotNavPlanner(const rclcpp::NodeOptions&)[m[K’:
-[01m[K/home/william-ubuntu/16832_ws/src/laplace_pathfinder/src/robot_nav_planner_node.cpp:27:25:[m[K [01;31m[Kerror: [m[Kassignment of read-only member ‘[01m[Klaplace_pathfinder::RobotNavPlanner::timer_period_s_[m[K’
-   27 |         [01;31m[Ktimer_period_s_ = declare_parameter<double>("timer_period_s", 0.5)[m[K;
-      |         [01;31m[K~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
-gmake[2]: *** [CMakeFiles/robot_nav_planner.dir/build.make:90: CMakeFiles/robot_nav_planner.dir/src/robot_nav_planner_node.cpp.o] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/robot_nav_planner.dir/all] Error 2
-gmake: *** [Makefile:146: all] Error 2

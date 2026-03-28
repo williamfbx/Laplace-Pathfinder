@@ -1,4 +1,0 @@
-Invoking command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin -- -j12 -l12
-Invoked command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin -- -j12 -l12
-Invoking command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin
-Invoked command in '/home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/william-ubuntu/16832_ws/build/gazebo_ros2_2dmap_plugin
