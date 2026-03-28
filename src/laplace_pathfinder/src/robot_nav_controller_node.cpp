@@ -3,39 +3,29 @@
 #include <cmath>
 #include <functional>
 
-namespace
-{
-
-constexpr double kPi = 3.14159265358979323846;
-
-}  // namespace
-
 namespace laplace_pathfinder
 {
 
-RobotNavController::RobotNavController(const rclcpp::NodeOptions & options)
-: Node("robot_nav_controller", options),
-	current_goal_{0.0, 0.0},
-	x_start_(0.0),
-	y_start_(0.0),
-	last_x_(0.0),
-	last_y_(0.0),
-	has_active_goal_(false),
-	has_pose_(false)
+RobotNavController::RobotNavController(const rclcpp::NodeOptions & options) : Node("robot_nav_controller", options)
 {
+
+	// Parameters
 	cmd_vel_topic_ = declare_parameter<std::string>("cmd_vel_topic", "/cmd_vel");
 	odom_topic_ = declare_parameter<std::string>("odom_topic", "/odom");
 	waypoint_topic_ = declare_parameter<std::string>("waypoint_topic", "/waypoint");
 	waypoint_tolerance_ = declare_parameter<double>("waypoint_tolerance", 0.15);
 
 	linear_kp_ = declare_parameter<double>("linear_kp", 0.2);
-	angular_kp_ = declare_parameter<double>("angular_kp", 0.005);
+	angular_kp_ = declare_parameter<double>("angular_kp", 0.05);
 
+	// Publishers and subscribers
 	cmd_vel_publisher_ = create_publisher<geometry_msgs::msg::Twist>(cmd_vel_topic_, 10);
+
 	odom_subscription_ = create_subscription<nav_msgs::msg::Odometry>(
 		odom_topic_,
 		10,
 		std::bind(&RobotNavController::odom_callback, this, std::placeholders::_1));
+
 	waypoint_subscription_ = create_subscription<geometry_msgs::msg::Point>(
 		waypoint_topic_,
 		10,
@@ -48,6 +38,7 @@ RobotNavController::RobotNavController(const rclcpp::NodeOptions & options)
 		odom_topic_.c_str(),
 		cmd_vel_topic_.c_str());
 }
+
 
 void RobotNavController::waypoint_callback(const geometry_msgs::msg::Point::SharedPtr msg)
 {
@@ -72,6 +63,7 @@ void RobotNavController::waypoint_callback(const geometry_msgs::msg::Point::Shar
 	}
 }
 
+
 void RobotNavController::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg)
 {
 	last_x_ = msg->pose.pose.position.x;
@@ -87,18 +79,16 @@ void RobotNavController::odom_callback(const nav_msgs::msg::Odometry::SharedPtr 
 	const double y_curr = last_y_;
 	const double dist = std::hypot(current_goal_.x - x_curr, current_goal_.y - y_curr);
 
-	const double current_yaw_deg = compute_yaw_radians(*msg) * 180.0 / kPi;
+	const double current_yaw_deg = compute_yaw_radians(*msg) * 180.0 / M_PI;
 	const double goal_heading_deg = compute_goal_heading_degrees();
 	const double heading_error_deg = normalize_angle_degrees(goal_heading_deg - current_yaw_deg);
 
-	// Unified differential drive controller
-	// 1. Rotation based on heading error
+	// Angular velocity control
 	geometry_msgs::msg::Twist command_msg;
 	command_msg.angular.z = (angular_kp_ * heading_error_deg);
 
-	// 2. Forward motion based on distance, but reduced if heading is misaligned
-	// The closer to the correct heading, the faster we move forward
-	const double heading_alignment = std::cos(heading_error_deg * kPi / 180.0);
+	// Linear velocity control
+	const double heading_alignment = std::cos(heading_error_deg * M_PI / 180.0);
 	const double forward_speed = (linear_kp_ * dist) * std::max(0.0, heading_alignment);
 	command_msg.linear.x = forward_speed;
 
@@ -132,14 +122,17 @@ void RobotNavController::odom_callback(const nav_msgs::msg::Odometry::SharedPtr 
 	cmd_vel_publisher_->publish(command_msg);
 }
 
+
 void RobotNavController::publish_stop()
 {
 	geometry_msgs::msg::Twist stop_msg;
 	cmd_vel_publisher_->publish(stop_msg);
 }
 
+
 double RobotNavController::compute_yaw_radians(const nav_msgs::msg::Odometry & odometry) const
 {
+	// Convert quaternion to yaw angle
 	const auto & orientation = odometry.pose.pose.orientation;
 	const double siny_cosp = 2.0 * ((orientation.w * orientation.z) + (orientation.x * orientation.y));
 	const double cosy_cosp =
@@ -147,10 +140,12 @@ double RobotNavController::compute_yaw_radians(const nav_msgs::msg::Odometry & o
 	return std::atan2(siny_cosp, cosy_cosp);
 }
 
+
 double RobotNavController::compute_goal_heading_degrees() const
 {
-	return std::atan2(current_goal_.y - y_start_, current_goal_.x - x_start_) * 180.0 / kPi;
+	return std::atan2(current_goal_.y - y_start_, current_goal_.x - x_start_) * 180.0 / M_PI;
 }
+
 
 double RobotNavController::normalize_angle_degrees(double angle_degrees) const
 {

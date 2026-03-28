@@ -1,0 +1,58 @@
+[0.016s] Invoking command in '/home/william-ubuntu/16832_ws/build/laplace_pathfinder': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world:/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin /usr/bin/cmake --build /home/william-ubuntu/16832_ws/build/laplace_pathfinder -- -j12 -l12
+[0.051s] [35m[1mConsolidate compiler generated dependencies of target robot_nav_controller[0m
+[0.066s] [ 14%] [32mBuilding CXX object CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_main.cpp.o[0m
+[0.067s] [ 71%] Built target robot_nav_planner
+[0.069s] [ 85%] [32mBuilding CXX object CMakeFiles/robot_nav_controller.dir/src/robot_nav_controller_node.cpp.o[0m
+[6.976s] [100%] [32m[1mLinking CXX executable robot_nav_controller[0m
+[7.371s] [100%] Built target robot_nav_controller
+[7.384s] Invoked command in '/home/william-ubuntu/16832_ws/build/laplace_pathfinder' returned '0': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world:/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin /usr/bin/cmake --build /home/william-ubuntu/16832_ws/build/laplace_pathfinder -- -j12 -l12
+[7.386s] Invoking command in '/home/william-ubuntu/16832_ws/build/laplace_pathfinder': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world:/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin /usr/bin/cmake --install /home/william-ubuntu/16832_ws/build/laplace_pathfinder
+[7.395s] -- Install configuration: ""
+[7.395s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch
+[7.395s] -- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/laplace_pathfinder.launch.py
+[7.395s] -- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/simulation.launch.py
+[7.395s] -- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/robot_nav_controller.launch.py
+[7.395s] -- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/robot_nav_planner.launch.py
+[7.395s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config
+[7.395s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/robot_nav_planner_params.yaml
+[7.395s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/scenario_config.yaml
+[7.395s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/robot_nav_controller_params.yaml
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/bookstore.yaml
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/bookstore_map_annimation.mp4
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/bookstore_map.npy
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/bookstore_map.py
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/bookstore_map_plot.png
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/bookstore_map_phi.npy
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/.DS_Store
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/bookstore.pgm
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/__pycache__
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/__pycache__/bookstore_map.cpython-38.pyc
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/maps/__pycache__/bookstore_map.cpython-310.pyc
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/models
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/models/goal_marker.sdf
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/models/start_marker.sdf
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include/laplace_pathfinder
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include/laplace_pathfinder/utils.hpp
+[7.396s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include/laplace_pathfinder/robot_nav_planner.hpp
+[7.396s] -- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/include/laplace_pathfinder/robot_nav_controller.hpp
+[7.396s] -- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/lib/laplace_pathfinder/robot_nav_controller
+[7.399s] -- Set runtime path of "/home/william-ubuntu/16832_ws/install/laplace_pathfinder/lib/laplace_pathfinder/robot_nav_controller" to ""
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/lib/laplace_pathfinder/robot_nav_planner
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/ament_index/resource_index/package_run_dependencies/laplace_pathfinder
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/ament_index/resource_index/parent_prefix_path/laplace_pathfinder
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/ament_prefix_path.sh
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/ament_prefix_path.dsv
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/path.sh
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/environment/path.dsv
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.bash
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.sh
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.zsh
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/local_setup.dsv
+[7.400s] -- Installing: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/package.dsv
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/ament_index/resource_index/packages/laplace_pathfinder
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/cmake/laplace_pathfinderConfig.cmake
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/cmake/laplace_pathfinderConfig-version.cmake
+[7.400s] -- Up-to-date: /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/package.xml
+[7.401s] Invoked command in '/home/william-ubuntu/16832_ws/build/laplace_pathfinder' returned '0': CMAKE_PREFIX_PATH=/home/william-ubuntu/16832_ws/install/dynamic_logistics_warehouse:/opt/ros/humble:/home/william-ubuntu/16832_ws/install/aws_robomaker_bookstore_world:/home/william-ubuntu/16832_ws/install/laplace_pathfinder:/home/william-ubuntu/16832_ws/install/gazebo_ros2_2dmap_plugin /usr/bin/cmake --install /home/william-ubuntu/16832_ws/build/laplace_pathfinder

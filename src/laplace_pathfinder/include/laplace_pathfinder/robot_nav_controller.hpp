@@ -49,7 +49,7 @@ private:
 	double angular_kp_;
 
 	// Robot state
-	Waypoint current_goal_;
+	Waypoint current_goal_{0.0, 0.0};
 	double x_start_{0.0};
 	double y_start_{0.0};
 	double last_x_{0.0};

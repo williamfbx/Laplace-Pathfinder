@@ -1,4 +1,7 @@
 /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/laplace_pathfinder.launch.py
+/home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/simulation.launch.py
+/home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/robot_nav_controller.launch.py
+/home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/launch/robot_nav_planner.launch.py
 /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/robot_nav_planner_params.yaml
 /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/scenario_config.yaml
 /home/william-ubuntu/16832_ws/install/laplace_pathfinder/share/laplace_pathfinder/config/robot_nav_controller_params.yaml
