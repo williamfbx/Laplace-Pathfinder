@@ -30,6 +30,21 @@ ament_target_dependencies(robot_nav_controller
 	rclcpp
 )
 
+add_executable(perturbation
+	src/perturbation_main.cpp
+	src/perturbation_node.cpp
+	src/utils.cpp
+)
+
+target_include_directories(perturbation PUBLIC
+	include
+)
+
+ament_target_dependencies(perturbation
+	nav_msgs
+	rclcpp
+)
+
 add_executable(robot_nav_planner
 	src/robot_nav_planner_main.cpp
 	src/robot_nav_planner_node.cpp
@@ -57,7 +72,7 @@ install(
 )
 
 install(
-	TARGETS robot_nav_controller robot_nav_planner
+	TARGETS robot_nav_controller robot_nav_planner perturbation
 	DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -42,10 +42,18 @@ def generate_launch_description():
         launch_arguments={'use_sim_time': use_sim_time}.items(),
     )
 
+    perturbation_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(launch_dir, 'perturbation.launch.py')
+        ),
+        launch_arguments={'use_sim_time': use_sim_time}.items(),
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         simulation_launch,
         robot_nav_planner_launch,
         robot_nav_controller_launch,
         local_costmap_launch,
+        perturbation_launch,
     ])

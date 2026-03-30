@@ -157,4 +157,50 @@ std::vector<std::vector<int64_t>> load_npy_int64(const std::string & path, int &
 	return result;
 }
 
+
+void save_npy_float64(const std::string & path, const std::vector<std::vector<double>> & data)
+{
+	const int rows = static_cast<int>(data.size());
+	const int cols = rows > 0 ? static_cast<int>(data[0].size()) : 0;
+
+	// Build header string: must be padded so that (10 + header_len) % 64 == 0
+	std::string hdr = "{'descr': '<f8', 'fortran_order': False, 'shape': (";
+	hdr += std::to_string(rows) + ", " + std::to_string(cols) + "), }";
+	// Pad with spaces to reach 64-byte alignment; terminate with '\n'
+	// Total prefix before data: 6 (magic) + 1 (major) + 1 (minor) + 2 (hdr_len) = 10
+	const std::size_t prefix_len = 10;
+	const std::size_t raw_len = prefix_len + hdr.size() + 1;  // +1 for '\n'
+	const std::size_t padded_len = ((raw_len + 63) / 64) * 64;
+	hdr.append(padded_len - raw_len, ' ');
+	hdr += '\n';
+
+	std::ofstream f(path, std::ios::binary);
+	if (!f) {
+		throw std::runtime_error("Cannot open file for writing: " + path);
+	}
+
+	// Magic + version 1.0
+	f.write("\x93NUMPY", 6);
+	const uint8_t major = 1, minor = 0;
+	f.write(reinterpret_cast<const char *>(&major), 1);
+	f.write(reinterpret_cast<const char *>(&minor), 1);
+
+	// Header length (uint16 little-endian)
+	const uint16_t hdr_len = static_cast<uint16_t>(hdr.size());
+	f.write(reinterpret_cast<const char *>(&hdr_len), 2);
+
+	f.write(hdr.data(), static_cast<std::streamsize>(hdr.size()));
+
+	// Data (row-major)
+	for (int r = 0; r < rows; ++r) {
+		f.write(
+			reinterpret_cast<const char *>(data[r].data()),
+			static_cast<std::streamsize>(cols * sizeof(double)));
+	}
+
+	if (!f) {
+		throw std::runtime_error("Error writing .npy file: " + path);
+	}
+}
+
 }  // namespace laplace_pathfinder

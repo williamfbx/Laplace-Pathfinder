@@ -12,15 +12,15 @@ robot_nav_planner:
     # Path to the precomputed Laplace potential field
     phi_file_path: "src/laplace_pathfinder/maps/bookstore_map_phi.npy"
 
-    # Path to the binary occupancy map (0=free, non-zero=occupied)
-    map_file_path: "src/laplace_pathfinder/maps/bookstore_map.npy"
+    # Path to save debug output (potential field values along the path)
+    debug_path: "src/laplace_pathfinder/maps/phi_debug.npy"
 
     # Planner callback timer
     timer_period_s: 0.5
 
     # Number of gradient ascent steps to look ahead before publishing the waypoint
     # The waypoint should be higher than waypoint_tolerance in robot_nav_controller_params.yaml
-    step_lookahead: 6
+    step_lookahead: 3
 
     # Phi value at which the robot is considered to have reached the goal
     goal_phi_threshold: 90.0

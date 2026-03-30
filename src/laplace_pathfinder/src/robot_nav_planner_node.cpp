@@ -1,6 +1,9 @@
 #include "laplace_pathfinder/robot_nav_planner.hpp"
 #include "laplace_pathfinder/utils.hpp"
 
+#include <std_msgs/msg/empty.hpp>
+#include <std_msgs/msg/float32_multi_array.hpp>
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -32,20 +35,25 @@ RobotNavPlanner::RobotNavPlanner(const rclcpp::NodeOptions & options) : Node("ro
 		throw std::runtime_error("Potential field file path is not set.");
 	}
 
-	map_file_path_ = declare_parameter<std::string>("map_file_path", "");
-	if (map_file_path_.empty()) {
-		throw std::runtime_error("Map file path is not set.");
+	debug_path_ = declare_parameter<std::string>("debug_path", "");
+	if (debug_path_.empty()) {
+		throw std::runtime_error("Debug output file path is not set.");
 	}
 
 	// Publishers, subscribers, and timers
 	waypoint_publisher_ = create_publisher<geometry_msgs::msg::Point>(waypoint_topic_, 10);
 
-	global_costmap_publisher_ = create_publisher<nav_msgs::msg::OccupancyGrid>(
-		"/global_costmap", rclcpp::QoS(1).transient_local());
-
 	odom_subscription_ = create_subscription<nav_msgs::msg::Odometry>(
 		odom_topic_, 10,
 		std::bind(&RobotNavPlanner::odom_callback, this, std::placeholders::_1));
+
+	perturbation_field_subscription_ = create_subscription<std_msgs::msg::Float32MultiArray>(
+		"/perturbation_field", rclcpp::QoS(1),
+		std::bind(&RobotNavPlanner::perturbation_field_callback, this, std::placeholders::_1));
+
+	debug_trigger_subscription_ = create_subscription<std_msgs::msg::Empty>(
+		"/debug_trigger", 10,
+		std::bind(&RobotNavPlanner::debug_trigger_callback, this, std::placeholders::_1));
 
 	timer_ = create_wall_timer(
 		std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -54,13 +62,11 @@ RobotNavPlanner::RobotNavPlanner(const rclcpp::NodeOptions & options) : Node("ro
 
 	// Load potential field
 	phi_ = laplace_pathfinder::load_npy_float64(phi_path_, phi_rows_, phi_cols_);
+	delta_phi_.assign(phi_rows_, std::vector<double>(phi_cols_, 0.0));
 	RCLCPP_INFO(
 		get_logger(),
 		"Loaded phi field: %d rows x %d cols from %s",
 		phi_rows_, phi_cols_, phi_path_.c_str());
-
-	// Publish global costmap once at startup
-	publish_global_costmap();
 
 	RCLCPP_INFO(
 		get_logger(),
@@ -68,6 +74,72 @@ RobotNavPlanner::RobotNavPlanner(const rclcpp::NodeOptions & options) : Node("ro
 		timer_period_s_,
 		step_lookahead_,
 		step_lookahead_ * map_resolution_);
+}
+
+
+void RobotNavPlanner::perturbation_field_callback(const std_msgs::msg::Float32MultiArray::SharedPtr msg)
+{
+	// Reset delta_phi_
+	for (auto & row : delta_phi_) {
+		std::fill(row.begin(), row.end(), 0.0);
+	}
+
+	// Message layout: [origin_x, origin_y, resolution, width, height, delta_0, delta_1, ...]
+	if (msg->data.size() < 5) {
+		return;
+	}
+	const double pf_ox = static_cast<double>(msg->data[0]);
+	const double pf_oy = static_cast<double>(msg->data[1]);
+	const double pf_res = static_cast<double>(msg->data[2]);
+	const int pf_w = static_cast<int>(msg->data[3]);
+	const int pf_h = static_cast<int>(msg->data[4]);
+
+	if (static_cast<std::size_t>(pf_w) * pf_h + 5 != msg->data.size()) {
+		return;
+	}
+
+	// Map each perturbation_field cell onto the corresponding phi_ cell.
+	for (int pr = 0; pr < pf_h; ++pr) {
+		for (int pc = 0; pc < pf_w; ++pc) {
+			const std::size_t data_idx = 5 + static_cast<std::size_t>(pr) * pf_w + pc;
+			const float delta_val = msg->data[data_idx];
+			if (delta_val == 0.0f) {
+				continue;
+			}
+
+			const double wx = pf_ox + pc * pf_res;
+			const double wy = pf_oy + pr * pf_res;
+
+			// Convert world coords to phi grid indices
+			const int phi_c = static_cast<int>(std::round((wx - map_origin_x_) / map_resolution_));
+			const int phi_r = static_cast<int>(std::round(static_cast<double>(phi_rows_ - 1) - (wy - map_origin_y_) / map_resolution_));
+
+			if (phi_r < 0 || phi_r >= phi_rows_ || phi_c < 0 || phi_c >= phi_cols_) {
+				continue;
+			}
+
+			delta_phi_[phi_r][phi_c] = static_cast<double>(delta_val);
+		}
+	}
+}
+
+
+void RobotNavPlanner::debug_trigger_callback(const std_msgs::msg::Empty::SharedPtr /*msg*/)
+{
+	std::vector<std::vector<double>> combined(phi_rows_, std::vector<double>(phi_cols_));
+	for (int r = 0; r < phi_rows_; ++r) {
+		for (int c = 0; c < phi_cols_; ++c) {
+			combined[r][c] = phi_[r][c] + delta_phi_[r][c];
+		}
+	}
+
+	try {
+		laplace_pathfinder::save_npy_float64(debug_path_, combined);
+		RCLCPP_INFO(get_logger(), "Debug: saved phi+delta_phi (%dx%d) to %s",
+			phi_rows_, phi_cols_, debug_path_.c_str());
+	} catch (const std::exception & e) {
+		RCLCPP_ERROR(get_logger(), "Debug save failed: %s", e.what());
+	}
 }
 
 
@@ -102,7 +174,7 @@ void RobotNavPlanner::timer_callback()
 		return;
 	}
 
-	// Follow the gradient
+	// Follow gradient
 	int cur_row = row, cur_col = col;
 	for (int i = 0; i < step_lookahead_; ++i) {
 		auto [nr, nc] = find_next_step(cur_row, cur_col);
@@ -168,8 +240,8 @@ std::pair<int, int> RobotNavPlanner::find_next_step(int row, int col) const
 		if (nr < 0 || nr >= phi_rows_ || nc < 0 || nc >= phi_cols_) {
 			continue;
 		}
-		const double v = phi_[nr][nc];
-		if (v == 0.0) {
+		const double v = phi_[nr][nc] + delta_phi_[nr][nc];
+		if (phi_[nr][nc] == 0.0) {
 			continue;
 		}
 		if (v > best_phi) {
@@ -181,46 +253,14 @@ std::pair<int, int> RobotNavPlanner::find_next_step(int row, int col) const
 
 	// If no valid step found, return current cell
 	if (best_row < 0) {
+		RCLCPP_WARN(
+			get_logger(),
+			"No valid gradient step from grid (%d, %d). Staying put.",
+			row, col);
 		return {row, col};
 	}
 	
 	return {best_row, best_col};
-}
-
-
-void RobotNavPlanner::publish_global_costmap()
-{
-	int map_rows = 0, map_cols = 0;
-	const auto map_data = laplace_pathfinder::load_npy_int64(map_file_path_, map_rows, map_cols);
-
-	RCLCPP_INFO(
-		get_logger(),
-		"Loaded map: %d rows x %d cols from %s",
-		map_rows, map_cols, map_file_path_.c_str());
-
-	nav_msgs::msg::OccupancyGrid msg;
-	msg.header.stamp = now();
-	msg.header.frame_id = "odom";
-
-	msg.info.resolution = map_resolution_;
-	msg.info.width = static_cast<uint32_t>(map_cols);
-	msg.info.height = static_cast<uint32_t>(map_rows);
-	msg.info.origin.position.x = map_origin_x_;
-	msg.info.origin.position.y = map_origin_y_;
-	msg.info.origin.position.z = 0.0;
-	msg.info.origin.orientation.w = 1.0;
-
-	msg.data.resize(static_cast<std::size_t>(map_rows) * map_cols);
-	for (int r = 0; r < map_rows; ++r) {
-		for (int c = 0; c < map_cols; ++c) {
-			const int grid_row = (map_rows - 1) - r;
-			const std::size_t idx = static_cast<std::size_t>(r) * map_cols + c;
-			msg.data[idx] = (map_data[grid_row][c] != 0) ? 100 : 0;
-		}
-	}
-
-	global_costmap_publisher_->publish(msg);
-	RCLCPP_INFO(get_logger(), "Published global costmap");
 }
 
 }  // namespace laplace_pathfinder
