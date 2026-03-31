@@ -15,6 +15,11 @@ class Perturbation : public rclcpp::Node
 {
 public:
 	explicit Perturbation(const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
+	enum class SolverMode {
+		kPureSor,
+		kNnWarmstartSor,
+		kNnOnly,
+	};
 
 private:
 	// Publishers
@@ -29,6 +34,16 @@ private:
 	void compare_costmaps();
 	void solve_local_laplace();
 	void world_to_phi_grid(double wx, double wy, int & pr, int & pc) const;
+	static SolverMode parse_solver_mode(const std::string & mode);
+	void run_sor_on_patch(
+		std::vector<std::vector<double>> & patch_phi,
+		const std::vector<std::vector<bool>> & patch_fixed,
+		const std::vector<std::vector<bool>> & patch_wall,
+		int max_iters) const;
+	bool try_nn_patch_inference(
+		std::vector<std::vector<double>> & patch_phi,
+		const std::vector<std::vector<bool>> & patch_fixed,
+		const std::vector<std::vector<bool>> & patch_wall) const;
 
 	// Callbacks
 	void local_costmap_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);
@@ -55,8 +70,11 @@ private:
 	bool has_local_costmap_{false};
 
 	// Solver parameters
+	std::string solver_mode_str_;
+	SolverMode solver_mode_{SolverMode::kPureSor};
 	int inflate_radius_{5};
 	int sor_max_iters_{2000};
+	int nn_warmstart_sor_iters_{40};
 	double sor_tolerance_{1e-3};
 	double sor_omega_{1.7};
 };

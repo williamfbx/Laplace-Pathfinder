@@ -30,10 +30,12 @@ Perturbation::Perturbation(const rclcpp::NodeOptions & options) : Node("perturba
 		throw std::runtime_error("phi_file_path is not set.");
 	}
 
+	solver_mode_str_ = declare_parameter<std::string>("solver_mode", "pure_sor");
 	inflate_radius_ = declare_parameter<int>("inflate_radius", 5);
 	sor_max_iters_ = declare_parameter<int>("sor_max_iters", 2000);
 	sor_tolerance_ = declare_parameter<double>("sor_tolerance", 1e-3);
 	sor_omega_ = declare_parameter<double>("sor_omega", 1.7);
+	nn_warmstart_sor_iters_ = declare_parameter<int>("nn_warmstart_sor_iters", 40);
 
     // Publisher
 	global_costmap_publisher_ = create_publisher<nav_msgs::msg::OccupancyGrid>(
@@ -48,6 +50,13 @@ Perturbation::Perturbation(const rclcpp::NodeOptions & options) : Node("perturba
 		std::bind(&Perturbation::local_costmap_callback, this, std::placeholders::_1));
 
 	publish_global_costmap();
+
+	// Load solver mode
+	solver_mode_ = parse_solver_mode(solver_mode_str_);
+	RCLCPP_INFO(
+		get_logger(),
+		"Perturbation solver mode: %s",
+		solver_mode_str_.c_str());
 
 	// Load potential field
 	phi_ = laplace_pathfinder::load_npy_float64(phi_file_path_, phi_rows_, phi_cols_);
@@ -302,48 +311,32 @@ void Perturbation::solve_local_laplace()
 		}
 	}
 
-	// Solve Laplace's equation on the patch using SOR
-	const int MAX_ITERS = sor_max_iters_;
-	const double TOLERANCE = sor_tolerance_;
-	const double OMEGA = sor_omega_;
-	constexpr int kDR[4] = {-1, 1, 0, 0};
-	constexpr int kDC[4] = {0, 0, -1, 1};
+	// Solve Laplace's equation using SOR
+	if (solver_mode_ == SolverMode::kPureSor) {
+		run_sor_on_patch(patch_phi, patch_fixed, patch_wall, sor_max_iters_);
+	}
+	
+	// Solve Laplace's equation using NN warm-start + SOR refinement
+	else if (solver_mode_ == SolverMode::kNnWarmstartSor) {
+		const bool nn_ok = try_nn_patch_inference(patch_phi, patch_fixed, patch_wall);
 
-	for (int iter = 0; iter < MAX_ITERS; ++iter) {
-		double max_change = 0.0;
-		for (int pr = 1; pr < ph - 1; ++pr) {
-			for (int pc = 1; pc < pw - 1; ++pc) {
-
-				// Fixed cell
-				if (patch_fixed[pr][pc]) {
-					continue;
-				}
-
-				double sum = 0.0;
-				int cnt = 0;
-				for (int k = 0; k < 4; ++k) {
-					const int nr = pr + kDR[k];
-					const int nc = pc + kDC[k];
-					// Skip wall cells
-					if (patch_wall[nr][nc]){
-						continue; 
-					}
-					sum += patch_phi[nr][nc];
-					++cnt;
-				}
-				if (cnt == 0) {
-					continue;
-				}
-
-				const double gs_val = sum / cnt;
-				const double new_val = (1.0 - OMEGA) * patch_phi[pr][pc] + OMEGA * gs_val;
-				max_change = std::max(max_change, std::abs(new_val - patch_phi[pr][pc]));
-				patch_phi[pr][pc] = new_val;
-			}
+		if (!nn_ok) {
+			RCLCPP_WARN(get_logger(), "NN warm-start unavailable. Falling back to pure SOR.");
+			run_sor_on_patch(patch_phi, patch_fixed, patch_wall, sor_max_iters_);
+		} else {
+			run_sor_on_patch(patch_phi, patch_fixed, patch_wall, nn_warmstart_sor_iters_);
 		}
-		if (max_change < TOLERANCE) {
-			RCLCPP_INFO(get_logger(), "SOR converged in %d iterations.", iter + 1);
-			break;
+	}
+	
+	// Solve Laplace's equation using NN only
+	else if (solver_mode_ == SolverMode::kNnOnly) {
+		const bool nn_ok = try_nn_patch_inference(patch_phi, patch_fixed, patch_wall);
+
+		if (!nn_ok) {
+			RCLCPP_WARN(get_logger(), "NN inference failed. Falling back to pure SOR.");
+			run_sor_on_patch(patch_phi, patch_fixed, patch_wall, sor_max_iters_);
+		} else {
+			// TODO
 		}
 	}
 
@@ -382,6 +375,89 @@ void Perturbation::solve_local_laplace()
 
 	perturbation_field_publisher_->publish(pf);
 	RCLCPP_INFO(get_logger(), "New obstacles detected. Published perturbation field.");
+}
+
+
+Perturbation::SolverMode Perturbation::parse_solver_mode(const std::string & mode)
+{
+	if (mode == "pure_sor") {
+		return Perturbation::SolverMode::kPureSor;
+	}
+	if (mode == "nn_warmstart_sor") {
+		return Perturbation::SolverMode::kNnWarmstartSor;
+	}
+	if (mode == "nn_only") {
+		return Perturbation::SolverMode::kNnOnly;
+	}
+	return Perturbation::SolverMode::kPureSor;
+}
+
+
+void Perturbation::run_sor_on_patch(
+	std::vector<std::vector<double>> & patch_phi,
+	const std::vector<std::vector<bool>> & patch_fixed,
+	const std::vector<std::vector<bool>> & patch_wall,
+	int max_iters) const
+{
+	const int ph = static_cast<int>(patch_phi.size());
+	if (ph == 0) {
+		return;
+	}
+	const int pw = static_cast<int>(patch_phi[0].size());
+	constexpr int kDR[4] = {-1, 1, 0, 0};
+	constexpr int kDC[4] = {0, 0, -1, 1};
+
+	for (int iter = 0; iter < max_iters; ++iter) {
+		double max_change = 0.0;
+		for (int pr = 1; pr < ph - 1; ++pr) {
+			for (int pc = 1; pc < pw - 1; ++pc) {
+
+				// Fixed cell
+				if (patch_fixed[pr][pc]) {
+					continue;
+				}
+
+				double sum = 0.0;
+				int cnt = 0;
+				for (int k = 0; k < 4; ++k) {
+					const int nr = pr + kDR[k];
+					const int nc = pc + kDC[k];
+					if (patch_wall[nr][nc]) {
+						continue;
+					}
+					sum += patch_phi[nr][nc];
+					++cnt;
+				}
+				if (cnt == 0) {
+					continue;
+				}
+
+				const double gs_val = sum / cnt;
+				const double new_val = (1.0 - sor_omega_) * patch_phi[pr][pc] + sor_omega_ * gs_val;
+				max_change = std::max(max_change, std::abs(new_val - patch_phi[pr][pc]));
+				patch_phi[pr][pc] = new_val;
+			}
+		}
+		if (max_change < sor_tolerance_) {
+			RCLCPP_INFO(get_logger(), "SOR converged in %d iterations.", iter + 1);
+			return;
+		}
+	}
+}
+
+// TODO
+bool Perturbation::try_nn_patch_inference(
+	std::vector<std::vector<double>> & patch_phi,
+	const std::vector<std::vector<bool>> & patch_fixed,
+	const std::vector<std::vector<bool>> & patch_wall) const
+{
+	(void)patch_phi;
+	(void)patch_fixed;
+	(void)patch_wall;
+
+	// Integration scaffold: replace this stub with model inference (e.g. ONNX Runtime).
+	// Expected behavior: write NN prediction into patch_phi and return true on success.
+	return false;
 }
 
 

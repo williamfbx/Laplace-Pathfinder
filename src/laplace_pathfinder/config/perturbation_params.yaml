@@ -14,7 +14,14 @@ perturbation:
     # Inflation radius for new dynamic obstacles
     inflate_radius: 5
 
+    # Solver mode options:
+    # - pure_sor
+    # - nn_warmstart_sor
+    # - nn_only
+    solver_mode: "pure_sor"
+
     # SOR solver parameters
     sor_max_iters: 2000
     sor_tolerance: 0.001
     sor_omega: 1.7
+    nn_warmstart_sor_iters: 40
