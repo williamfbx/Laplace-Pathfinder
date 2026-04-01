@@ -1,3 +1,36 @@
+/**
+ * @file robot_nav_controller_node.cpp
+ * @brief Proportional waypoint-following controller
+ *
+ * This ROS 2 node subscribes to odometry and waypoint messages and publishes Twist commands
+ * to steer the robot. On each odometry update it:
+ *  1) Computes Euclidean distance and heading error to the current goal.
+ *  2) Scales linear speed by cosine of heading error (alignment factor).
+ *  3) Applies independent P-gains for linear and angular axes.
+ *  4) Stops and clears the goal once within waypoint_tolerance.
+ *
+ * @version 1.0.0
+ * @date 2026-03-31
+ *
+ * Maintainer: Boxiang (William) Fu
+ * Project: CMU 16832 Integrated Planning and Learning
+ *
+ * Subscribers:
+ * - /odom      : [nav_msgs::msg::Odometry] Robot pose and orientation.
+ * - /waypoint  : [geometry_msgs::msg::Point] Next goal position in world frame.
+ *
+ * Publishers:
+ * - /cmd_vel   : [geometry_msgs::msg::Twist] Linear and angular velocity command.
+ *
+ * Parameters:
+ * - cmd_vel_topic        : [string]  Topic for velocity commands.
+ * - odom_topic           : [string]  Topic for odometry.
+ * - waypoint_topic       : [string]  Topic for waypoint goals.
+ * - waypoint_tolerance   : [double]  Distance (m) at which a waypoint is considered reached.
+ * - linear_kp            : [double]  Proportional gain for linear speed.
+ * - angular_kp           : [double]  Proportional gain for angular speed.
+ */
+ 
 #include "laplace_pathfinder/robot_nav_controller.hpp"
 
 #include <cmath>

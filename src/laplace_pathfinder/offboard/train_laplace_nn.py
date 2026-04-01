@@ -11,25 +11,44 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 
 
-class SimplePatchCNN(nn.Module):
-    def __init__(self, in_ch: int = 3, base: int = 32):
+class ResidualBlock(nn.Module):
+    def __init__(self, ch: int):
         super().__init__()
-        self.net = nn.Sequential(
+        self.conv1 = nn.Conv2d(ch, ch, kernel_size=3, padding=1)
+        self.act1 = nn.SiLU(inplace=True)
+        self.conv2 = nn.Conv2d(ch, ch, kernel_size=3, padding=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out = self.conv1(x)
+        out = self.act1(out)
+        out = self.conv2(out)
+        return x + out
+
+
+class SimplePatchCNN(nn.Module):
+    def __init__(self, in_ch: int = 3, base: int = 64, blocks: int = 8):
+        super().__init__()
+        self.stem = nn.Sequential(
             nn.Conv2d(in_ch, base, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(base, base, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(base, base, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(base, 1, kernel_size=1),
+            nn.SiLU(inplace=True),
+        )
+        self.body = nn.Sequential(*[ResidualBlock(base) for _ in range(blocks)])
+        self.head = nn.Sequential(
+            nn.SiLU(inplace=True),
+            nn.Conv2d(base, base // 2, kernel_size=3, padding=1),
+            nn.SiLU(inplace=True),
+            nn.Conv2d(base // 2, 1, kernel_size=1),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.net(x)
+        x = self.stem(x)
+        x = self.body(x)
+        return self.head(x)
 
 
 class CollectedPatchDataset(Dataset):
@@ -57,12 +76,16 @@ class CollectedPatchDataset(Dataset):
 
 def train(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if args.device == "cuda" and torch.cuda.is_available() else "cpu")
-    model = SimplePatchCNN(in_ch=3, base=args.base_channels).to(device)
+    model = SimplePatchCNN(in_ch=3, base=args.base_channels, blocks=args.res_blocks).to(device)
     opt = optim.Adam(model.parameters(), lr=args.lr)
+    scheduler = StepLR(opt, step_size=args.lr_step, gamma=args.lr_gamma)
     dataset = CollectedPatchDataset(args.data_dir)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, drop_last=False)
 
     print(f"Training on {device}, dataset={args.data_dir}, samples={len(dataset)}")
+
+    best_loss = float("inf")
+    best_state = None
 
     model.train()
     for epoch in range(1, args.epochs + 1):
@@ -90,9 +113,19 @@ def train(args: argparse.Namespace) -> None:
             batch_count += 1
 
         epoch_loss = running_loss / max(batch_count, 1)
+        if epoch_loss < best_loss:
+            best_loss = epoch_loss
+            best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
 
         if epoch % args.log_every == 0 or epoch == 1:
-            print(f"epoch={epoch:4d}  loss={epoch_loss:.6f}")
+            current_lr = opt.param_groups[0]["lr"]
+            print(f"epoch={epoch:4d}  loss={epoch_loss:.6f}  best={best_loss:.6f}  lr={current_lr:.2e}")
+
+        scheduler.step()
+
+    if best_state is not None:
+        model.load_state_dict(best_state)
+        print(f"Restored best model with loss={best_loss:.6f}")
 
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     model.eval().cpu()
@@ -113,8 +146,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--data-dir", type=str, default="src/laplace_pathfinder/data/")
     p.add_argument("--patch-h", type=int, default=64)
     p.add_argument("--patch-w", type=int, default=64)
-    p.add_argument("--base-channels", type=int, default=32)
-    p.add_argument("--log-every", type=int, default=50)
+    p.add_argument("--base-channels", type=int, default=64)
+    p.add_argument("--res-blocks", type=int, default=8)
+    p.add_argument("--lr-step", type=int, default=200)
+    p.add_argument("--lr-gamma", type=float, default=0.5)
+    p.add_argument("--log-every", type=int, default=25)
     return p.parse_args()
 
 

@@ -18,10 +18,10 @@ perturbation:
     # - pure_sor
     # - nn_warmstart_sor
     # - nn_only
-    solver_mode: "nn_warmstart_sor"
+    solver_mode: "pure_sor"
 
     # When true, force pure_sor and save supervised training samples
-    data_collection: false
+    data_collection: true
     data_dir: "src/laplace_pathfinder/data/"
 
     # SOR solver parameters

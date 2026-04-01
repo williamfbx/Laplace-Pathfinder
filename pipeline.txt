@@ -4,8 +4,9 @@
 2. Place dynamic_bookstore.world in src/aws-robomaker-bookstore-world/worlds/
 3. Put map.pgm and map.yaml into maps/ DIRECTORY
 4. Run python3 offboard_main.python3
-5. Edit robot_nav_planner_params.yaml with parameters from YAML file
-6. Launch simulator with ros2 launch laplace_pathfinder laplace_pathfinder.launch.py
+5. Train NN with train_laplace_nn.py
+6. Edit robot_nav_planner_params.yaml with parameters from YAML file
+7. Launch simulator with ros2 launch laplace_pathfinder laplace_pathfinder.launch.py
 
 DEBUGGING:
 ros2 topic pub --once /debug_trigger std_msgs/msg/Empty {}

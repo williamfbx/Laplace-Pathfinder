@@ -18,3 +18,13 @@ cd /home/william-ubuntu/16832_ws
 python src/laplace_pathfinder/offboard/train_laplace_nn.py \
   --epochs 200 \
   --batch-size 32
+
+python src/laplace_pathfinder/offboard/train_laplace_nn.py \
+  --epochs 10 \
+  --batch-size 8 \
+  --base-channels 96 \
+  --res-blocks 12 \
+  --lr 1e-3 \
+  --lr-step 150 \
+  --lr-gamma 0.5 \
+  --device cuda

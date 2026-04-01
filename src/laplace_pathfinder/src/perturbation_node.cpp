@@ -1,3 +1,51 @@
+/**
+ * @file perturbation_node.cpp
+ * @brief Detects dynamic obstacles by comparing local and global costmaps, solves a local
+ *        Laplace patch to compute a perturbation field, and publishes it for the planner.
+ *
+ * This ROS 2 node loads a static global map and a precomputed potential field (phi) from disk.
+ * On each local costmap message it:
+ *  1) Compares every occupied local cell against the global costmap.
+ *  2) If all local obstacles are already in the global map, publishes a zero perturbation field.
+ *  3) Otherwise, extracts a local phi patch, overlays new obstacles and an inflation buffer,
+ *     and solves Laplace's equation over the patch using one of three solver modes:
+ *       - pure_sor          : Successive Over-Relaxation (SOR) only.
+ *       - nn_warmstart_sor  : TorchScript NN initialises the patch; SOR refines it.
+ *       - nn_only           : TorchScript NN predicts the perturbation directly.
+ *  4) Converts the solved patch to a perturbation delta (phi_solved - phi_global) and publishes it.
+ *  5) Optionally writes per-call training samples to disk when data_collection is enabled.
+ *
+ * @version 1.0.0
+ * @date 2026-04-01
+ *
+ * Maintainer: Boxiang (William) Fu
+ * Project: CMU 16832 Integrated Planning and Learning
+ *
+ * Subscribers:
+ * - /local_costmap       : [nav_msgs::msg::OccupancyGrid] Live local obstacle map.
+ *
+ * Publishers:
+ * - /global_costmap      : [nav_msgs::msg::OccupancyGrid] Static global costmap.
+ * - /perturbation_field  : [std_msgs::msg::Float32MultiArray] Perturbation delta for the planner.
+ *                          Layout: [origin_x, origin_y, resolution, width, height, delta_0, ...]
+ *
+ * Parameters:
+ * - map_origin_x           : [double]  World x-coordinate of the map origin.
+ * - map_origin_y           : [double]  World y-coordinate of the map origin.
+ * - map_resolution         : [double]  Meters per grid cell.
+ * - map_file_path          : [string]  Path to the global occupancy map (.npy, int64).
+ * - phi_file_path          : [string]  Path to the precomputed potential field (.npy, float64).
+ * - solver_mode            : [string]  Solver to use: pure_sor | nn_warmstart_sor | nn_only.
+ * - inflate_radius         : [int]     Obstacle inflation radius in grid cells.
+ * - sor_max_iters          : [int]     Maximum SOR iterations per patch.
+ * - sor_tolerance          : [double]  SOR convergence threshold (max cell change).
+ * - sor_omega              : [double]  SOR relaxation factor.
+ * - nn_warmstart_sor_iters : [int]     SOR iterations after NN warm-start.
+ * - nn_model_path          : [string]  Path to the TorchScript model (.pt).
+ * - data_collection      	: [bool]    If true, forces pure_sor and writes training samples to disk.
+ * - data_dir             	: [string]  Directory for collected training samples.
+ */
+
 #include "laplace_pathfinder/perturbation.hpp"
 #include "laplace_pathfinder/utils.hpp"
 

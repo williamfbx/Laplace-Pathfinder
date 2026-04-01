@@ -1,3 +1,47 @@
+/**
+ * @file robot_nav_planner_node.cpp
+ * @brief Gradient ascent waypoint planner over a precomputed Laplace potential field
+ *        with online perturbation for dynamic obstacles.
+ *
+ * This ROS 2 node loads a static potential field (phi) from disk and, on a fixed timer,
+ * follows the steepest-ascent gradient to issue short-horizon waypoints to the controller.
+ * It also:
+ *  1) Maintains a perturbation field (delta_phi) updated from the perturbation_node.
+ *  2) Evaluates phi + delta_phi at each step so dynamic obstacles deflect the path.
+ *  3) Performs a multi-step lookahead to smooth waypoint chatter.
+ *  4) Stops publishing once the robot reaches a cell whose phi value exceeds goal_phi_threshold.
+ *  5) Optionally saves phi + delta_phi to disk on demand for offline debugging.
+ *
+ * @version 1.0.0
+ * @date 2026-03-31
+ *
+ * Maintainer: Boxiang (William) Fu
+ * Project: CMU 16832 Integrated Planning and Learning
+ *
+ * Subscribers:
+ * - /odom               : [nav_msgs::msg::Odometry] Current robot pose.
+ * - /perturbation_field : [std_msgs::msg::Float32MultiArray] Dynamic obstacle perturbation patch.
+ * - /debug_trigger      : [std_msgs::msg::Empty] Triggers a save of phi+delta_phi to disk.
+ *
+ * Publishers:
+ * - /waypoint           : [geometry_msgs::msg::Point] Next short-horizon waypoint for the controller.
+ *
+ * Timers:
+ * - Planning timer      : Fires at timer_period_s and runs the gradient-ascent waypoint selection.
+ *
+ * Parameters:
+ * - odom_topic          : [string]  Topic for odometry.
+ * - waypoint_topic      : [string]  Topic on which waypoints are published.
+ * - map_origin_x        : [double]  World x-coordinate of the map origin.
+ * - map_origin_y        : [double]  World y-coordinate of the map origin.
+ * - map_resolution      : [double]  Meters per grid cell.
+ * - timer_period_s      : [double]  Planning timer period in seconds.
+ * - step_lookahead      : [int]     Number of gradient steps per timer tick.
+ * - goal_phi_threshold  : [double]  phi value above which the robot is considered at the goal.
+ * - phi_file_path       : [string]  Path to the precomputed potential field (.npy).
+ * - debug_path          : [string]  Path for the debug phi+delta_phi snapshot (.npy).
+ */
+ 
 #include "laplace_pathfinder/robot_nav_planner.hpp"
 #include "laplace_pathfinder/utils.hpp"
 
