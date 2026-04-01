@@ -5,8 +5,11 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
+
+#include <torch/script.h>
 
 namespace laplace_pathfinder
 {
@@ -40,10 +43,22 @@ private:
 		const std::vector<std::vector<bool>> & patch_fixed,
 		const std::vector<std::vector<bool>> & patch_wall,
 		int max_iters) const;
+	bool ensure_torch_model_ready() const;
 	bool try_nn_patch_inference(
 		std::vector<std::vector<double>> & patch_phi,
 		const std::vector<std::vector<bool>> & patch_fixed,
 		const std::vector<std::vector<bool>> & patch_wall) const;
+	void prepare_perturbation_field_data(
+		std_msgs::msg::Float32MultiArray & pf,
+		const std::vector<std::vector<double>> & patch_phi,
+		const std::vector<std::vector<bool>> & patch_fixed,
+		const std::vector<std::vector<bool>> & patch_wall,
+		int patch_r0,
+		int patch_r1,
+		int patch_c0,
+		int ph,
+		int pw,
+		bool already_perturbation) const;
 
 	// Callbacks
 	void local_costmap_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);
@@ -77,6 +92,16 @@ private:
 	int nn_warmstart_sor_iters_{40};
 	double sor_tolerance_{1e-3};
 	double sor_omega_{1.7};
+	mutable std::uint64_t sor_solve_count_{0};
+	mutable std::uint64_t sor_total_iterations_{0};
+
+	// Torch NN parameters
+	std::string nn_model_path_;
+
+	// Model load state
+	mutable bool nn_model_load_attempted_{false};
+	mutable bool nn_model_ready_{false};
+	mutable std::unique_ptr<torch::jit::script::Module> nn_module_;
 };
 
 }  // namespace laplace_pathfinder

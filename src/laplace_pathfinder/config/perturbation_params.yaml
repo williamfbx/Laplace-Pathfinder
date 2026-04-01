@@ -18,10 +18,13 @@ perturbation:
     # - pure_sor
     # - nn_warmstart_sor
     # - nn_only
-    solver_mode: "pure_sor"
+    solver_mode: "nn_only"
 
     # SOR solver parameters
     sor_max_iters: 2000
     sor_tolerance: 0.001
     sor_omega: 1.7
     nn_warmstart_sor_iters: 40
+
+    # TorchScript model (.pt) for NN inference
+    nn_model_path: "src/laplace_pathfinder/models/patch_nn_scripted.pt"

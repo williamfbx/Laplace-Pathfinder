@@ -6,8 +6,11 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
+#include <limits>
 #include <stdexcept>
 #include <string>
+
+#include <torch/script.h>
 
 namespace laplace_pathfinder
 {
@@ -28,6 +31,11 @@ Perturbation::Perturbation(const rclcpp::NodeOptions & options) : Node("perturba
 	phi_file_path_ = declare_parameter<std::string>("phi_file_path", "");
 	if (phi_file_path_.empty()) {
 		throw std::runtime_error("phi_file_path is not set.");
+	}
+
+	nn_model_path_ = declare_parameter<std::string>("nn_model_path", "");
+	if (nn_model_path_.empty()) {
+		RCLCPP_WARN(get_logger(), "nn_model_path is not set.");
 	}
 
 	solver_mode_str_ = declare_parameter<std::string>("solver_mode", "pure_sor");
@@ -64,6 +72,13 @@ Perturbation::Perturbation(const rclcpp::NodeOptions & options) : Node("perturba
 		get_logger(),
 		"Loaded phi field: %d rows x %d cols from %s",
 		phi_rows_, phi_cols_, phi_file_path_.c_str());
+
+	// Load NN model
+	if (solver_mode_ != SolverMode::kPureSor) {
+		if (!ensure_torch_model_ready()) {
+			throw std::runtime_error("Failed to load Torch model for NN solver mode.");
+		}
+	}
 }
 
 
@@ -312,6 +327,7 @@ void Perturbation::solve_local_laplace()
 	}
 
 	// Solve Laplace's equation using SOR
+	bool patch_already_perturbation = false;
 	if (solver_mode_ == SolverMode::kPureSor) {
 		run_sor_on_patch(patch_phi, patch_fixed, patch_wall, sor_max_iters_);
 	}
@@ -324,6 +340,16 @@ void Perturbation::solve_local_laplace()
 			RCLCPP_WARN(get_logger(), "NN warm-start unavailable. Falling back to pure SOR.");
 			run_sor_on_patch(patch_phi, patch_fixed, patch_wall, sor_max_iters_);
 		} else {
+			for (int pr = 0; pr < ph; ++pr) {
+				for (int pc = 0; pc < pw; ++pc) {
+					if (patch_wall[pr][pc]) {
+						continue;
+					}
+					const int gr = patch_r0 + pr;
+					const int gc = patch_c0 + pc;
+					patch_phi[pr][pc] += phi_[gr][gc];
+				}
+			}
 			run_sor_on_patch(patch_phi, patch_fixed, patch_wall, nn_warmstart_sor_iters_);
 		}
 	}
@@ -336,7 +362,8 @@ void Perturbation::solve_local_laplace()
 			RCLCPP_WARN(get_logger(), "NN inference failed. Falling back to pure SOR.");
 			run_sor_on_patch(patch_phi, patch_fixed, patch_wall, sor_max_iters_);
 		} else {
-			// TODO
+			patch_already_perturbation = true;
+			RCLCPP_INFO(get_logger(), "Used NN-only inference for perturbation patch.");
 		}
 	}
 
@@ -352,26 +379,17 @@ void Perturbation::solve_local_laplace()
 	pf.data.push_back(static_cast<float>(pw));
 	pf.data.push_back(static_cast<float>(ph));
 	pf.data.insert(pf.data.end(), static_cast<std::size_t>(ph) * pw, 0.0f);
-
-	for (int mr = 0; mr < ph; ++mr) {
-		const int phi_r = patch_r1 - mr;
-		for (int mc = 0; mc < pw; ++mc) {
-			const int phi_c = patch_c0 + mc;
-			const int pr = phi_r - patch_r0;
-			const int pc = phi_c - patch_c0;
-			const std::size_t data_idx = 5 + static_cast<std::size_t>(mr) * pw + mc;
-
-			if (patch_wall[pr][pc]) {
-				// Dynamic obstacles have delta = -phi_ so the total potential becomes zero
-				if (map_[phi_r][phi_c] == 0) {
-					pf.data[data_idx] = static_cast<float>(-phi_[phi_r][phi_c]);
-				}
-				continue;
-			}
-
-			pf.data[data_idx] = static_cast<float>(patch_phi[pr][pc] - phi_[phi_r][phi_c]);
-		}
-	}
+	prepare_perturbation_field_data(
+		pf,
+		patch_phi,
+		patch_fixed,
+		patch_wall,
+		patch_r0,
+		patch_r1,
+		patch_c0,
+		ph,
+		pw,
+		patch_already_perturbation);
 
 	perturbation_field_publisher_->publish(pf);
 	RCLCPP_INFO(get_logger(), "New obstacles detected. Published perturbation field.");
@@ -390,6 +408,49 @@ Perturbation::SolverMode Perturbation::parse_solver_mode(const std::string & mod
 		return Perturbation::SolverMode::kNnOnly;
 	}
 	return Perturbation::SolverMode::kPureSor;
+}
+
+
+void Perturbation::prepare_perturbation_field_data(
+	std_msgs::msg::Float32MultiArray & pf,
+	const std::vector<std::vector<double>> & patch_phi,
+	const std::vector<std::vector<bool>> & patch_fixed,
+	const std::vector<std::vector<bool>> & patch_wall,
+	int patch_r0,
+	int patch_r1,
+	int patch_c0,
+	int ph,
+	int pw,
+	bool already_perturbation) const
+{
+	for (int mr = 0; mr < ph; ++mr) {
+		const int phi_r = patch_r1 - mr;
+		for (int mc = 0; mc < pw; ++mc) {
+			const int phi_c = patch_c0 + mc;
+			const int pr = phi_r - patch_r0;
+			const int pc = phi_c - patch_c0;
+			const std::size_t data_idx = 5 + static_cast<std::size_t>(mr) * pw + mc;
+
+			if (patch_wall[pr][pc]) {
+				// Dynamic obstacles have delta = -phi_ so the total potential becomes zero.
+				if (map_[phi_r][phi_c] == 0) {
+					pf.data[data_idx] = static_cast<float>(-phi_[phi_r][phi_c]);
+				}
+				continue;
+			}
+
+			if (already_perturbation) {
+				if (patch_fixed[pr][pc]) {
+					pf.data[data_idx] = 0.0f;
+				} else {
+					pf.data[data_idx] = static_cast<float>(patch_phi[pr][pc]);
+				}
+				continue;
+			}
+
+			pf.data[data_idx] = static_cast<float>(patch_phi[pr][pc] - phi_[phi_r][phi_c]);
+		}
+	}
 }
 
 
@@ -439,25 +500,163 @@ void Perturbation::run_sor_on_patch(
 			}
 		}
 		if (max_change < sor_tolerance_) {
-			RCLCPP_INFO(get_logger(), "SOR converged in %d iterations.", iter + 1);
+			const int current_iters = iter + 1;
+			++sor_solve_count_;
+			sor_total_iterations_ += static_cast<std::uint64_t>(current_iters);
+			const double avg_iters = static_cast<double>(sor_total_iterations_) /
+				static_cast<double>(sor_solve_count_);
+			RCLCPP_INFO(
+				get_logger(),
+				"SOR converged in %d iterations (running avg %.2f over %lu solves).",
+				current_iters,
+				avg_iters,
+				static_cast<unsigned long>(sor_solve_count_));
 			return;
 		}
 	}
+
+	++sor_solve_count_;
+	sor_total_iterations_ += static_cast<std::uint64_t>(max_iters);
+	const double avg_iters = static_cast<double>(sor_total_iterations_) /
+		static_cast<double>(sor_solve_count_);
+	RCLCPP_WARN(
+		get_logger(),
+		"SOR reached max iterations (%d) without convergence (running avg %.2f over %lu solves).",
+		max_iters,
+		avg_iters,
+		static_cast<unsigned long>(sor_solve_count_));
 }
 
-// TODO
+
+bool Perturbation::ensure_torch_model_ready() const
+{
+	if (nn_model_ready_) {
+		return true;
+	}
+	if (nn_model_load_attempted_) {
+		return false;
+	}
+	nn_model_load_attempted_ = true;
+
+	if (nn_model_path_.empty()) {
+		RCLCPP_ERROR(get_logger(), "Model path is empty. Cannot run NN inference.");
+		return false;
+	}
+
+	try {
+		nn_module_ = std::make_unique<torch::jit::script::Module>(torch::jit::load(nn_model_path_));
+		nn_module_->to(torch::kCPU);
+		RCLCPP_INFO(get_logger(), "Loaded torch model on CPU: %s", nn_model_path_.c_str());
+
+		nn_module_->eval();
+		nn_model_ready_ = true;
+		return true;
+	}
+	catch (const c10::Error & e) {
+		RCLCPP_ERROR(get_logger(), "Failed to load torch model '%s': %s", nn_model_path_.c_str(), e.what());
+		return false;
+
+	}
+	catch (const std::exception & e) {
+		RCLCPP_ERROR(get_logger(), "Torch model init failed: %s", e.what());
+		return false;
+	}
+}
+
+
 bool Perturbation::try_nn_patch_inference(
 	std::vector<std::vector<double>> & patch_phi,
 	const std::vector<std::vector<bool>> & patch_fixed,
 	const std::vector<std::vector<bool>> & patch_wall) const
 {
-	(void)patch_phi;
-	(void)patch_fixed;
-	(void)patch_wall;
+	if (!ensure_torch_model_ready()) {
+		return false;
+	}
 
-	// Integration scaffold: replace this stub with model inference (e.g. ONNX Runtime).
-	// Expected behavior: write NN prediction into patch_phi and return true on success.
-	return false;
+	const int ph = static_cast<int>(patch_phi.size());
+	if (ph == 0) {
+		return false;
+	}
+	const int pw = static_cast<int>(patch_phi[0].size());
+
+	std::vector<float> input_data(static_cast<std::size_t>(3) * ph * pw, 0.0f);
+	auto input_at = [&](int ch, int r, int c) -> float & {
+		const std::size_t idx = static_cast<std::size_t>(ch) * ph * pw + static_cast<std::size_t>(r) * pw + c;
+		return input_data[idx];
+	};
+
+	for (int r = 0; r < ph; ++r) {
+		for (int c = 0; c < pw; ++c) {
+			input_at(0, r, c) = static_cast<float>(patch_phi[r][c]);
+			input_at(1, r, c) = patch_fixed[r][c] ? 1.0f : 0.0f;
+			input_at(2, r, c) = patch_wall[r][c] ? 1.0f : 0.0f;
+		}
+	}
+
+	try {
+		torch::Tensor input = torch::from_blob(
+			input_data.data(),
+			{1, 3, ph, pw},
+			torch::TensorOptions().dtype(torch::kFloat32)).clone();
+		input = input.to(torch::kCPU);
+
+		std::vector<torch::jit::IValue> torch_inputs;
+		torch_inputs.emplace_back(input);
+
+		torch::Tensor output = nn_module_->forward(torch_inputs).toTensor();
+		output = output.to(torch::kCPU);
+
+		if (output.dim() != 4 || output.size(0) != 1 || output.size(1) != 1) {
+			RCLCPP_ERROR(
+				get_logger(),
+				"Torch model output must be shaped [1, 1, H, W], got rank=%ld with dims=[%ld, %ld, %ld, %ld].",
+				output.dim(),
+				output.dim() > 0 ? output.size(0) : -1,
+				output.dim() > 1 ? output.size(1) : -1,
+				output.dim() > 2 ? output.size(2) : -1,
+				output.dim() > 3 ? output.size(3) : -1);
+			return false;
+		}
+
+		if (output.size(2) != ph || output.size(3) != pw) {
+			RCLCPP_ERROR(
+				get_logger(),
+				"Torch model output spatial shape [%ld, %ld] does not match patch [%d, %d].",
+				output.size(2),
+				output.size(3),
+				ph,
+				pw);
+			return false;
+		}
+
+		output = output[0][0];
+
+		output = output.contiguous();
+		const float * out_ptr = output.data_ptr<float>();
+		for (int r = 0; r < ph; ++r) {
+			for (int c = 0; c < pw; ++c) {
+				if (patch_fixed[r][c]) {
+					patch_phi[r][c] = 0.0;
+					continue;
+				}
+				const std::size_t idx = static_cast<std::size_t>(r) * pw + c;
+				const double value = static_cast<double>(out_ptr[idx]);
+				if (!std::isfinite(value)) {
+					RCLCPP_ERROR(get_logger(), "Torch output contains non-finite values.");
+					return false;
+				}
+				patch_phi[r][c] = value;
+			}
+		}
+
+		return true;
+	} catch (const c10::Error & e) {
+		RCLCPP_ERROR(get_logger(), "Torch forward pass failed: %s", e.what());
+		return false;
+	} catch (const std::exception & e) {
+		RCLCPP_ERROR(get_logger(), "Torch inference exception: %s", e.what());
+		return false;
+	}
 }
 
 

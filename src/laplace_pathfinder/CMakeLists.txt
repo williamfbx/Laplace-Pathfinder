@@ -14,6 +14,15 @@ find_package(ament_index_cpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+
+set(TORCH_LIBRARIES_CLEAN "")
+foreach(TORCH_LIB ${TORCH_LIBRARIES})
+	if(NOT TORCH_LIB MATCHES "NOTFOUND")
+		list(APPEND TORCH_LIBRARIES_CLEAN ${TORCH_LIB})
+	endif()
+endforeach()
 
 add_executable(robot_nav_controller
 	src/robot_nav_controller_main.cpp
@@ -44,6 +53,9 @@ ament_target_dependencies(perturbation
 	nav_msgs
 	rclcpp
 )
+
+target_link_libraries(perturbation ${TORCH_LIBRARIES_CLEAN})
+message(STATUS "libtorch found. Enabling torch NN inference in perturbation node.")
 
 add_executable(robot_nav_planner
 	src/robot_nav_planner_main.cpp

@@ -12,3 +12,9 @@ cd /home/william-ubuntu/16832_ws && source install/setup.bash && export GAZEBO_M
 
 ros2 topic pub --once /waypoint geometry_msgs/msg/Point "{x: -5.5, y: 6.5, z: 0.0}"
 ros2 run laplace_pathfinder robot_nav_controller
+
+source .venv_torch18/bin/activate
+cd /home/william-ubuntu/16832_ws
+python3 src/laplace_pathfinder/offboard/train_simple_patch_nn.py \
+  --output src/laplace_pathfinder/models/patch_nn_scripted.pt \
+  --epochs 800 --patch-h 64 --patch-w 64
