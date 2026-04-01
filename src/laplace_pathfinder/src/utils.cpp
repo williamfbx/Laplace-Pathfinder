@@ -1,6 +1,7 @@
 #include "laplace_pathfinder/utils.hpp"
 
 #include <fstream>
+#include <iomanip>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -201,6 +202,49 @@ void save_npy_float64(const std::string & path, const std::vector<std::vector<do
 	if (!f) {
 		throw std::runtime_error("Error writing .npy file: " + path);
 	}
+}
+
+
+bool write_csv_float_matrix(const std::string & path, const std::vector<std::vector<double>> & data)
+{
+	std::ofstream out(path);
+	if (!out.is_open()) {
+		return false;
+	}
+
+	out << std::setprecision(10);
+	for (const auto & row : data) {
+		for (std::size_t c = 0; c < row.size(); ++c) {
+			if (c > 0) {
+				out << ',';
+			}
+			out << row[c];
+		}
+		out << '\n';
+	}
+
+	return static_cast<bool>(out);
+}
+
+
+bool write_csv_bool_matrix(const std::string & path, const std::vector<std::vector<bool>> & data)
+{
+	std::ofstream out(path);
+	if (!out.is_open()) {
+		return false;
+	}
+
+	for (const auto & row : data) {
+		for (std::size_t c = 0; c < row.size(); ++c) {
+			if (c > 0) {
+				out << ',';
+			}
+			out << (row[c] ? 1 : 0);
+		}
+		out << '\n';
+	}
+
+	return static_cast<bool>(out);
 }
 
 }  // namespace laplace_pathfinder

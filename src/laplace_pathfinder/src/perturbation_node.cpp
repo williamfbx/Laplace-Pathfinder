@@ -4,9 +4,13 @@
 #include <std_msgs/msg/float32_multi_array.hpp>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <filesystem>
 #include <functional>
+#include <iomanip>
 #include <limits>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -22,6 +26,14 @@ Perturbation::Perturbation(const rclcpp::NodeOptions & options) : Node("perturba
 	map_origin_x_ = declare_parameter<double>("map_origin_x", 0.0);
 	map_origin_y_ = declare_parameter<double>("map_origin_y", 0.0);
 	map_resolution_ = declare_parameter<double>("map_resolution", 0.05);
+	solver_mode_str_ = declare_parameter<std::string>("solver_mode", "pure_sor");
+	inflate_radius_ = declare_parameter<int>("inflate_radius", 5);
+	sor_max_iters_ = declare_parameter<int>("sor_max_iters", 2000);
+	sor_tolerance_ = declare_parameter<double>("sor_tolerance", 1e-3);
+	sor_omega_ = declare_parameter<double>("sor_omega", 1.7);
+	nn_warmstart_sor_iters_ = declare_parameter<int>("nn_warmstart_sor_iters", 40);
+	data_collection_ = declare_parameter<bool>("data_collection", false);
+	data_dir_ = declare_parameter<std::string>("data_dir", "data");
 
 	map_file_path_ = declare_parameter<std::string>("map_file_path", "");
 	if (map_file_path_.empty()) {
@@ -37,13 +49,6 @@ Perturbation::Perturbation(const rclcpp::NodeOptions & options) : Node("perturba
 	if (nn_model_path_.empty()) {
 		RCLCPP_WARN(get_logger(), "nn_model_path is not set.");
 	}
-
-	solver_mode_str_ = declare_parameter<std::string>("solver_mode", "pure_sor");
-	inflate_radius_ = declare_parameter<int>("inflate_radius", 5);
-	sor_max_iters_ = declare_parameter<int>("sor_max_iters", 2000);
-	sor_tolerance_ = declare_parameter<double>("sor_tolerance", 1e-3);
-	sor_omega_ = declare_parameter<double>("sor_omega", 1.7);
-	nn_warmstart_sor_iters_ = declare_parameter<int>("nn_warmstart_sor_iters", 40);
 
     // Publisher
 	global_costmap_publisher_ = create_publisher<nav_msgs::msg::OccupancyGrid>(
@@ -65,6 +70,13 @@ Perturbation::Perturbation(const rclcpp::NodeOptions & options) : Node("perturba
 		get_logger(),
 		"Perturbation solver mode: %s",
 		solver_mode_str_.c_str());
+	if (data_collection_) {
+		solver_mode_ = SolverMode::kPureSor;
+		RCLCPP_WARN(
+			get_logger(),
+			"data_collection=true, forcing solver_mode to pure_sor. Writing samples to: %s",
+			data_dir_.c_str());
+	}
 
 	// Load potential field
 	phi_ = laplace_pathfinder::load_npy_float64(phi_file_path_, phi_rows_, phi_cols_);
@@ -184,7 +196,7 @@ void Perturbation::compare_costmaps()
 		pf.data.push_back(static_cast<float>(lh));
 		pf.data.insert(pf.data.end(), static_cast<std::size_t>(lw) * lh, 0.0f);
 		perturbation_field_publisher_->publish(pf);
-		RCLCPP_INFO(get_logger(), "Found no new obstacles. Published zero perturbation field.");
+		RCLCPP_INFO(get_logger(), "Found no new obstacles.");
 	} else {
 		solve_local_laplace();
 	}
@@ -193,6 +205,8 @@ void Perturbation::compare_costmaps()
 
 void Perturbation::solve_local_laplace()
 {
+	const auto timer_start = std::chrono::steady_clock::now();
+
 	const double lox = local_costmap_.info.origin.position.x;
 	const double loy = local_costmap_.info.origin.position.y;
 	const double lres = local_costmap_.info.resolution;
@@ -326,6 +340,8 @@ void Perturbation::solve_local_laplace()
 		}
 	}
 
+	const std::vector<std::vector<double>> input_patch_phi = patch_phi;
+
 	// Solve Laplace's equation using SOR
 	bool patch_already_perturbation = false;
 	if (solver_mode_ == SolverMode::kPureSor) {
@@ -391,8 +407,32 @@ void Perturbation::solve_local_laplace()
 		pw,
 		patch_already_perturbation);
 
+	if (data_collection_) {
+		collect_patch_training_sample(
+			input_patch_phi,
+			patch_phi,
+			patch_fixed,
+			patch_wall,
+			patch_r0,
+			patch_c0,
+			ph,
+			pw);
+	}
+
 	perturbation_field_publisher_->publish(pf);
-	RCLCPP_INFO(get_logger(), "New obstacles detected. Published perturbation field.");
+
+	const auto timer_end = std::chrono::steady_clock::now();
+	const double timer_ms = std::chrono::duration<double, std::milli>(timer_end - timer_start).count();
+	++timer_call_count_;
+	timer_total_ms_ += timer_ms;
+	const double timer_avg_ms = timer_total_ms_ / static_cast<double>(timer_call_count_);
+
+	RCLCPP_INFO(
+		get_logger(),
+		"New obstacles detected. Runtime: %.3f ms (running avg %.3f ms over %lu calls).",
+		timer_ms,
+		timer_avg_ms,
+		static_cast<unsigned long>(timer_call_count_));
 }
 
 
@@ -451,6 +491,68 @@ void Perturbation::prepare_perturbation_field_data(
 			pf.data[data_idx] = static_cast<float>(patch_phi[pr][pc] - phi_[phi_r][phi_c]);
 		}
 	}
+}
+
+
+void Perturbation::collect_patch_training_sample(
+	const std::vector<std::vector<double>> & input_patch_phi,
+	const std::vector<std::vector<double>> & solved_patch_phi,
+	const std::vector<std::vector<bool>> & patch_fixed,
+	const std::vector<std::vector<bool>> & patch_wall,
+	int patch_r0,
+	int patch_c0,
+	int ph,
+	int pw)
+{
+	std::error_code ec;
+	std::filesystem::create_directories(data_dir_, ec);
+	if (ec) {
+		RCLCPP_ERROR(get_logger(), "Failed to create data directory '%s': %s", data_dir_.c_str(), ec.message().c_str());
+		return;
+	}
+
+	std::ostringstream sample_name;
+	sample_name << "sample_" << std::setw(8) << std::setfill('0') << data_sample_count_++;
+	const std::filesystem::path sample_dir = std::filesystem::path(data_dir_) / sample_name.str();
+	std::filesystem::create_directories(sample_dir, ec);
+	if (ec) {
+		RCLCPP_ERROR(get_logger(), "Failed to create sample directory '%s': %s", sample_dir.string().c_str(), ec.message().c_str());
+		return;
+	}
+
+	std::vector<std::vector<double>> delta(ph, std::vector<double>(pw, 0.0));
+	for (int pr = 0; pr < ph; ++pr) {
+		const int phi_r = patch_r0 + pr;
+		for (int pc = 0; pc < pw; ++pc) {
+			const int phi_c = patch_c0 + pc;
+			if (patch_wall[pr][pc]) {
+				if (map_[phi_r][phi_c] == 0) {
+					delta[pr][pc] = -phi_[phi_r][phi_c];
+				}
+				continue;
+			}
+			delta[pr][pc] = solved_patch_phi[pr][pc] - phi_[phi_r][phi_c];
+		}
+	}
+
+	if (!laplace_pathfinder::write_csv_float_matrix((sample_dir / "patch_phi.csv").string(), input_patch_phi)) {
+		RCLCPP_ERROR(get_logger(), "Failed to write '%s'", (sample_dir / "patch_phi.csv").string().c_str());
+		return;
+	}
+	if (!laplace_pathfinder::write_csv_bool_matrix((sample_dir / "patch_fixed.csv").string(), patch_fixed)) {
+		RCLCPP_ERROR(get_logger(), "Failed to write '%s'", (sample_dir / "patch_fixed.csv").string().c_str());
+		return;
+	}
+	if (!laplace_pathfinder::write_csv_bool_matrix((sample_dir / "patch_wall.csv").string(), patch_wall)) {
+		RCLCPP_ERROR(get_logger(), "Failed to write '%s'", (sample_dir / "patch_wall.csv").string().c_str());
+		return;
+	}
+	if (!laplace_pathfinder::write_csv_float_matrix((sample_dir / "delta.csv").string(), delta)) {
+		RCLCPP_ERROR(get_logger(), "Failed to write '%s'", (sample_dir / "delta.csv").string().c_str());
+		return;
+	}
+
+	RCLCPP_INFO(get_logger(), "Saved data sample: %s", sample_dir.string().c_str());
 }
 
 

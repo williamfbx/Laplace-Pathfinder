@@ -1,4 +1,5 @@
 build/
 install/
 log/
+src/laplace_pathfinder/data/
 .venv_torch18/

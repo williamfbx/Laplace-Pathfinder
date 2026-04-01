@@ -9,5 +9,5 @@ robot_nav_controller:
     waypoint_tolerance: 0.025
 
     # Proportional control gains
-    linear_kp: 0.2
+    linear_kp: 0.5
     angular_kp: 0.05
