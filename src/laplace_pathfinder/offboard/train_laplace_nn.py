@@ -11,7 +11,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 
@@ -74,11 +74,40 @@ class CollectedPatchDataset(Dataset):
         return torch.from_numpy(x), torch.from_numpy(y)
 
 
+def with_epoch_suffix(output_path: str, epoch: int) -> str:
+    stem, ext = os.path.splitext(output_path)
+    if not ext:
+        ext = ".pt"
+    return f"{stem}_{epoch}{ext}"
+
+
+def weighted_huber_loss(
+    pred: torch.Tensor,
+    target: torch.Tensor,
+    free_mask: torch.Tensor,
+    huber_delta: float,
+    weight_alpha: float,
+    weight_cap: float,
+) -> torch.Tensor:
+    err = pred - target
+    abs_err = torch.abs(err)
+    quadratic = 0.5 * (err ** 2)
+    linear = huber_delta * (abs_err - 0.5 * huber_delta)
+    huber = torch.where(abs_err <= huber_delta, quadratic, linear)
+
+    # Upweight larger-magnitude targets so rare large perturbations are learned.
+    target_mag = torch.abs(target)
+    weights = 1.0 + weight_alpha * torch.clamp(target_mag, max=weight_cap)
+    weighted = huber * weights * free_mask
+    denom = torch.clamp((weights * free_mask).sum(), min=1.0)
+    return weighted.sum() / denom
+
+
 def train(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if args.device == "cuda" and torch.cuda.is_available() else "cpu")
     model = SimplePatchCNN(in_ch=3, base=args.base_channels, blocks=args.res_blocks).to(device)
     opt = optim.Adam(model.parameters(), lr=args.lr)
-    scheduler = StepLR(opt, step_size=args.lr_step, gamma=args.lr_gamma)
+    scheduler = CosineAnnealingLR(opt, T_max=max(args.epochs, 1), eta_min=args.lr_min)
     dataset = CollectedPatchDataset(args.data_dir)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, drop_last=False)
 
@@ -102,9 +131,14 @@ def train(args: argparse.Namespace) -> None:
             pred = pred * free
             target = y * free
 
-            sq_error = (pred - target) ** 2
-            denom = torch.clamp(free.sum(), min=1.0)
-            loss = sq_error.sum() / denom
+            loss = weighted_huber_loss(
+                pred,
+                target,
+                free,
+                huber_delta=args.huber_delta,
+                weight_alpha=args.weight_alpha,
+                weight_cap=args.weight_cap,
+            )
             opt.zero_grad()
             loss.backward()
             opt.step()
@@ -120,6 +154,17 @@ def train(args: argparse.Namespace) -> None:
         if epoch % args.log_every == 0 or epoch == 1:
             current_lr = opt.param_groups[0]["lr"]
             print(f"epoch={epoch:4d}  loss={epoch_loss:.6f}  best={best_loss:.6f}  lr={current_lr:.2e}")
+
+        if args.save_every > 0 and epoch % args.save_every == 0:
+            periodic_output = with_epoch_suffix(args.output, epoch)
+            os.makedirs(os.path.dirname(periodic_output), exist_ok=True)
+            was_training = model.training
+            model.eval().cpu()
+            periodic_scripted = torch.jit.script(model)
+            periodic_scripted.save(periodic_output)
+            print(f"Saved periodic TorchScript model to: {periodic_output}")
+            model.to(device)
+            model.train(was_training)
 
         scheduler.step()
 
@@ -140,16 +185,19 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
     p.add_argument("--output", type=str, default="src/laplace_pathfinder/models/laplace_nn.pt")
     p.add_argument("--device", type=str, default="cuda", choices=["cpu", "cuda"])
-    p.add_argument("--epochs", type=int, default=800)
+    p.add_argument("--epochs", type=int, default=3000)
     p.add_argument("--batch-size", type=int, default=32)
     p.add_argument("--lr", type=float, default=1e-3)
+    p.add_argument("--lr-min", type=float, default=1e-5)
     p.add_argument("--data-dir", type=str, default="src/laplace_pathfinder/data/")
     p.add_argument("--patch-h", type=int, default=64)
     p.add_argument("--patch-w", type=int, default=64)
     p.add_argument("--base-channels", type=int, default=64)
     p.add_argument("--res-blocks", type=int, default=8)
-    p.add_argument("--lr-step", type=int, default=200)
-    p.add_argument("--lr-gamma", type=float, default=0.5)
+    p.add_argument("--huber-delta", type=float, default=1.0)
+    p.add_argument("--weight-alpha", type=float, default=2.0)
+    p.add_argument("--weight-cap", type=float, default=5.0)
+    p.add_argument("--save-every", type=int, default=100)
     p.add_argument("--log-every", type=int, default=25)
     return p.parse_args()
 
