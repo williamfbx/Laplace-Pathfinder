@@ -30,7 +30,8 @@ class ResidualBlock(nn.Module):
         return x + out
 
 
-class SimplePatchCNN(nn.Module):
+# This class is used to train the nn_only model
+class PatchCNN(nn.Module):
     def __init__(self, in_ch: int = 3, base: int = 64, blocks: int = 8):
         super().__init__()
         self.stem = nn.Sequential(
@@ -49,6 +50,24 @@ class SimplePatchCNN(nn.Module):
         x = self.stem(x)
         x = self.body(x)
         return self.head(x)
+    
+
+# This class is used to train the nn_warmstart_sor model
+class SimplePatchCNN(nn.Module):
+    def __init__(self, in_ch: int = 3, base: int = 32):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Conv2d(in_ch, base, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(base, base, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(base, base, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(base, 1, kernel_size=1),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x)
 
 
 class CollectedPatchDataset(Dataset):
@@ -105,7 +124,7 @@ def weighted_huber_loss(
 
 def train(args: argparse.Namespace) -> None:
     device = torch.device("cuda" if args.device == "cuda" and torch.cuda.is_available() else "cpu")
-    model = SimplePatchCNN(in_ch=3, base=args.base_channels, blocks=args.res_blocks).to(device)
+    model = PatchCNN(in_ch=3, base=args.base_channels, blocks=args.res_blocks).to(device)
     opt = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = CosineAnnealingLR(opt, T_max=max(args.epochs, 1), eta_min=args.lr_min)
     dataset = CollectedPatchDataset(args.data_dir)
