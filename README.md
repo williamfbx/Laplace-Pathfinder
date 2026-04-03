@@ -15,47 +15,24 @@ This repository is a **ROS 2 + Gazebo workspace for the `laplace_pathfinder` pro
 - **offline map preprocessing** from `.pgm` / `.yaml` inputs
 - **Laplace potential field generation** for global guidance
 - **online ROS 2 planning and control** for TurtleBot3 navigation
-- **dynamic-obstacle perturbation handling** with either classical SOR or learned neural etwork warm-starts
+- **dynamic-obstacle perturbation handling** with either classical SOR or learned neural network
 
 ---
 
-## Quick Start
+## Demo Video
 
-For a class demo or project checkoff, the shortest end-to-end path is:
+A sample project demo is shown below:
 
-1. **Build and source the workspace**
-   ```bash
-   cd ~/16832_ws
-   colcon build
-   source install/setup.bash
-   ```
+[![Laplace + SOR demo](documents/laplace_sor_8x.gif)](documents/laplace_sor_8x.gif)
 
-2. **Generate or copy the map assets** into `src/laplace_pathfinder/maps/`
-   - `bookstore.pgm`
-   - `bookstore.yaml`
-
-3. **Run the offline preprocessing step**
-   ```bash
-   python3 src/laplace_pathfinder/offboard/offboard_main.py
-   ```
-
-4. **Launch the full simulation + planning stack**
-   ```bash
-   ros2 launch laplace_pathfinder laplace_pathfinder.launch.py
-   ```
-
-5. **Optionally teleop or publish a waypoint**
-   ```bash
-   export TURTLEBOT3_MODEL=burger
-   ros2 run turtlebot3_teleop teleop_keyboard
-   ```
+This animation shows the Laplace + SOR navigation behavior used in the project.
 
 ---
 
 ## Features
 
 - Laplace-potential path planning for TurtleBot3 in ROS 2
-- End-to-end Gazebo simulation in bookstore and warehouse worlds
+- End-to-end Gazebo simulation in bookstore world
 - Scenario-driven start/goal setup via `scenario_config.yaml`
 - Offline preprocessing with `offboard_main.py` to generate `*_map.npy` and `*_phi.npy`
 - Online planner/controller stack launched through `laplace_pathfinder.launch.py`
@@ -80,7 +57,7 @@ For a class demo or project checkoff, the shortest end-to-end path is:
 ## Repository Structure
 
 ```text
-16832_ws/
+Laplace-Pathfinder/
 ├── src/
 │   ├── aws-robomaker-bookstore-world/   # Bookstore simulation world and assets
 │   ├── dynamic_logistics_warehouse/     # Warehouse world and assets
@@ -94,8 +71,7 @@ For a class demo or project checkoff, the shortest end-to-end path is:
 │       ├── models/                      # Gazebo / robot models
 │       ├── offboard/                    # Offline scripts and NN training
 │       └── src/                         # Core C++ source files
-├── commands.txt                         # Helpful development commands
-├── pipeline.txt                         # High-level setup and execution pipeline
+├── documents/                           # Demo media and project assets
 └── README.md                            # Project documentation
 ```
 
@@ -113,14 +89,6 @@ Before running the project, make sure you have:
 - Python dependencies for the offboard scripts (`numpy`, `PyYAML`, plotting utilities)
 - PyTorch for training or using the learned perturbation model
 
-If you are using the provided ML environment, activate:
-
-```bash
-source .venv_torch18/bin/activate
-```
-
-CUDA is optional but recommended for the longer `train_laplace_nn.py` runs.
-
 ---
 
 ## Installation and Build
@@ -128,45 +96,37 @@ CUDA is optional but recommended for the longer `train_laplace_nn.py` runs.
 From the workspace root:
 
 ```bash
-cd ~/16832_ws
+cd ~/Laplace-Pathfinder
 colcon build
 source install/setup.bash
-```
-
-If you use the training environment:
-
-```bash
-source .venv_torch18/bin/activate
 ```
 
 ---
 
 ## Setup Pipeline
 
-The following pipeline summarizes the intended setup and execution order from `pipeline.txt`.
-
 ### 1) Generate occupancy maps
 
 #### Bookstore world
 ```bash
-cd ~/16832_ws && \
+cd ~/Laplace-Pathfinder && \
 source install/setup.bash && \
-export GAZEBO_MODEL_PATH="$GAZEBO_MODEL_PATH:~/16832_ws/src/aws-robomaker-bookstore-world/models" && \
-export GAZEBO_RESOURCE_PATH="$GAZEBO_RESOURCE_PATH:~/16832_ws/src/aws-robomaker-bookstore-world" && \
+export GAZEBO_MODEL_PATH="$GAZEBO_MODEL_PATH:~/Laplace-Pathfinder/src/aws-robomaker-bookstore-world/models" && \
+export GAZEBO_RESOURCE_PATH="$GAZEBO_RESOURCE_PATH:~/Laplace-Pathfinder/src/aws-robomaker-bookstore-world" && \
 ros2 run gazebo_ros2_2dmap_plugin generate_map.sh \
-  ~/16832_ws/src/aws-robomaker-bookstore-world/worlds/bookstore.world \
-  ~/16832_ws
+  ~/Laplace-Pathfinder/src/aws-robomaker-bookstore-world/worlds/bookstore.world \
+  ~/Laplace-Pathfinder
 ```
 
 #### Warehouse world
 ```bash
-cd ~/16832_ws && \
+cd ~/Laplace-Pathfinder && \
 source install/setup.bash && \
-export GAZEBO_MODEL_PATH="$GAZEBO_MODEL_PATH:~/16832_ws/src/dynamic_logistics_warehouse/models" && \
-export GAZEBO_RESOURCE_PATH="$GAZEBO_RESOURCE_PATH:~/16832_ws/src/dynamic_logistics_warehouse" && \
+export GAZEBO_MODEL_PATH="$GAZEBO_MODEL_PATH:~/Laplace-Pathfinder/src/dynamic_logistics_warehouse/models" && \
+export GAZEBO_RESOURCE_PATH="$GAZEBO_RESOURCE_PATH:~/Laplace-Pathfinder/src/dynamic_logistics_warehouse" && \
 ros2 run gazebo_ros2_2dmap_plugin generate_map.sh \
-  ~/16832_ws/src/dynamic_logistics_warehouse/worlds/warehouse_static.world \
-  ~/16832_ws
+  ~/Laplace-Pathfinder/src/dynamic_logistics_warehouse/worlds/warehouse_static.world \
+  ~/Laplace-Pathfinder
 ```
 
 ### 2) Place world assets
@@ -264,12 +224,6 @@ ros2 launch aws_robomaker_bookstore_world bookstore.launch.py gui:=true
 ros2 launch dynamic_logistics_warehouse logistics_warehouse.launch.py
 ```
 
-### Start the planner stack
-
-```bash
-ros2 launch laplace_pathfinder laplace_pathfinder.launch.py
-```
-
 ### Teleoperate the robot
 
 ```bash
@@ -281,12 +235,6 @@ ros2 run turtlebot3_teleop teleop_keyboard
 
 ```bash
 ros2 topic pub --once /waypoint geometry_msgs/msg/Point "{x: -5.5, y: 6.5, z: 0.0}"
-```
-
-### Start the navigation controller
-
-```bash
-ros2 run laplace_pathfinder robot_nav_controller
 ```
 
 ---
@@ -317,37 +265,15 @@ When the repo is set up correctly, the main outputs live under `src/laplace_path
 - `models/laplace_nn.pt` — TorchScript perturbation model used by the ROS node
 - `data/sample_*/` — optional training samples collected when `data_collection: true`
 
-If you are preparing a report/demo, this is also the right place to add:
-
-- success rate across scenarios
-- planning time / controller behavior
-- screenshots or videos from Gazebo
-- comparison of `pure_sor` vs `nn_warmstart_sor` vs `nn_only`
-
 ---
 
-## Known Issues / Notes
+## Author
 
-- Map generation is sensitive to `GAZEBO_MODEL_PATH` and `GAZEBO_RESOURCE_PATH`.
-- `dynamic_bookstore.world` must exist in `src/aws-robomaker-bookstore-world/worlds/` for the dynamic bookstore setup.
-- `offboard_main.py` currently uses a hardcoded `map_stem` (`bookstore`), so change that when switching environments.
-- Training with `--device cuda` requires a working CUDA/PyTorch installation.
-
----
-
-## Team / Authors
-
-Package metadata currently lists:
-
-- **Boxiang Fu** (`boxiangf@andrew.cmu.edu`)
-
-Add additional teammates/contributors here if needed.
+- **Boxiang Fu** (`boxiangf@cs.cmu.edu`)
 
 ---
 
 ## License
-
-Per `package.xml`, this project uses:
 
 ```text
 Apache License 2.0

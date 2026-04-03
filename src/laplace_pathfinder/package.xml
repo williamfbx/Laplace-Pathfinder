@@ -4,7 +4,7 @@
   <name>laplace_pathfinder</name>
   <version>1.0.0</version>
   <description>Dynamic Laplace Pathfinder project for CMU 16832</description>
-  <maintainer email="boxiangf@andrew.cmu.edu">Boxiang Fu</maintainer>
+  <maintainer email="boxiangf@cs.cmu.edu">Boxiang Fu</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
