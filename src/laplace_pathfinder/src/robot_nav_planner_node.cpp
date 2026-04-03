@@ -288,6 +288,9 @@ std::pair<int, int> RobotNavPlanner::find_next_step(int row, int col) const
 		if (phi_[nr][nc] == 0.0) {
 			continue;
 		}
+		if (v == 0) {
+			continue;
+		}
 		if (v > best_phi) {
 			best_phi = v;
 			best_row = nr;
