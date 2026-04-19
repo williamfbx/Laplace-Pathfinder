@@ -23,7 +23,7 @@ This repository is a **ROS 2 + Gazebo workspace for the `laplace_pathfinder` pro
 
 A sample project demo is shown below:
 
-[![Laplace + SOR demo](Documents/laplace_sor_8x.gif)](Documents/laplace_sor_8x.gif)
+[![Laplace + SOR demo](documents/laplace_sor_8x.gif)](documents/laplace_sor_8x.gif)
 
 This animation shows the Laplace + SOR navigation behavior used in the project.
 
@@ -71,7 +71,7 @@ Laplace-Pathfinder/
 │       ├── models/                      # Gazebo / robot models
 │       ├── offboard/                    # Offline scripts and NN training
 │       └── src/                         # Core C++ source files
-├── Documents/                           # Demo media and project assets
+├── documents/                           # Demo media and project assets
 └── README.md                            # Project documentation
 ```
 
